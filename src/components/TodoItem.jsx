@@ -118,7 +118,7 @@ export default function TodoItem ({id, date, time, description, eventName, compl
         </>
         ) : (
           <label style={{ textDecoration: isCompleted ? 'line-through' : 'none' }}>
-            {description} - {date} - {time}
+            {editedText} - {editedDate} - {editedTime}
           </label>
         )}
 
@@ -146,6 +146,7 @@ export default function TodoItem ({id, date, time, description, eventName, compl
 
 
         <input type="checkbox" checked={isCompleted} onChange={toggleCompleted} />
+
         <button onClick={deleteItem}>Delete</button>
         <button onClick={editItem}>{editing ? 'Save' : 'Edit'}</button>
         {/* <button onClick={() => addItem(newDescription, newDate, newTime)}> Add</button> */}

@@ -3,8 +3,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import InteractionPlugin from '@fullcalendar/interaction';
 import React, { useState, useEffect, useRef } from 'react';
-import ClickEventPopup from './components/ClickEventPopup';
-import AddEventButtonPopup from './components/AddEventPopup';
+import ClickEventPopup from '../components/ClickEventPopup';
+import AddEventButtonPopup from '../components/AddEventPopup';
 
 let clickedEvent = {
     id: "randomlyInitializedEvent",

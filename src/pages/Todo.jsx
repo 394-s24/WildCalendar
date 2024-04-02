@@ -162,6 +162,8 @@ const TodoList = () => {
 
 export default TodoList;
 
+
+
 // used to add some data
 
 //   const addExampleTodoItems = (eventNames) => {

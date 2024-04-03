@@ -9,6 +9,7 @@ import { database } from '../firebase';
 import {ref, onValue, push} from '@firebase/database';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../Navigation/Navbar.jsx";
+import SearchClassEventButton from '../components/SearchClassEventButton.jsx'
 
 let clickedEvent = {
     id: "randomlyInitializedEvent",
@@ -97,6 +98,7 @@ const CalendarPage = () => {
                     setOpen={setShowAddEventButtonPopup}
                     onEventAdd={onEventAdd}
                 />
+                <SearchClassEventButton onEventAdd={onEventAdd}/>
             </div>
             <div>
                 <FullCalendar

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ref, update, push, remove } from '@firebase/database';
 import { database } from '../firebase';
 import { Dropdown, Space, Button } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 
 export default function TodoItem({ id, date, time, description, eventName, completed /*, addItem */ }) {
   const [isCompleted, setCompleted] = useState(completed);

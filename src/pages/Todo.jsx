@@ -136,6 +136,7 @@ const TodoList = () => {
     
   return (
     <div>
+       <Navbar />
       My todo list!
     {events.map((eventName) => (
         <div key={eventName}>
@@ -157,7 +158,6 @@ const TodoList = () => {
             </ul>
         </div>
     ))}
-  <Navbar />
 </div>
 );
 };

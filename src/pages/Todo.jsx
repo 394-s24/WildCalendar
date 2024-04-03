@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import TodoItem from '../components/TodoItem';
 import { database } from '../firebase';
 import {ref, onValue, push} from '@firebase/database';
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "../Navigation/Navbar.jsx";
 
 const TodoList = () => {
 
@@ -156,6 +157,7 @@ const TodoList = () => {
             </ul>
         </div>
     ))}
+  <Navbar />
 </div>
 );
 };

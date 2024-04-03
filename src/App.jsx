@@ -10,6 +10,7 @@ const Home = () => {
     <div>
       <Navbar/>
       homepage!
+      <Navbar/>
     </div>
   );
 };

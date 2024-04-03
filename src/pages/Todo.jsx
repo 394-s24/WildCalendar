@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import TodoItem from '../components/TodoItem';
 import { database } from '../firebase';
-import {ref, onValue, push} from '@firebase/database';
+import {ref, onValue, push, update} from '@firebase/database';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../Navigation/Navbar.jsx";
+import { Button } from 'antd';
 
 const TodoList = () => {
 
@@ -12,6 +13,7 @@ const TodoList = () => {
 
     const addItem = (eventName, newItemDescription, newItemDate, newItemTime) =>
     {
+      console.log("AddItem")
       const newData = {
           description: newItemDescription,
           date: newItemDate,
@@ -27,18 +29,10 @@ const TodoList = () => {
       updates[`/todo/${eventName}/${newTodoKey}`] = newData;
 
       return update(ref(database), updates)
-          .then(() => {
-              // reset the fields to empty after adding new item
-              setNewDescription('');
-              setNewDate('');
-              setNewTime('');
-              setShowInputs(false);
-          })
           .catch((error) => {
               console.error("Error adding new item: ", error);
           });
   };
-
 
   useEffect(() => {
     const eventRef = ref(database, 'todo');
@@ -82,17 +76,14 @@ const TodoList = () => {
     });
   }, [events]);
 
-  useEffect(() => {
-    console.log('Todos:', todos);
-  }, [])
-
   return (
     <div className='w-screen'>
-      My todo list!
-      {events.map((eventName) => (
-          <div key={eventName}>
-            <h3>{eventName}</h3>
-              <ul>
+      <div className='mx-auto w-max'>
+        <h1 className="text-3xl font-bold p-4">My Todo List</h1>
+        {events.map((eventName) => (
+            <div key={eventName}>
+              <h3 className='pl-6 text-lg font-bold'>{eventName}</h3>
+              <ul className='flex flex-col gap-1'>
                 {todos[eventName] &&
                   Object.entries(todos[eventName]).map(([id, todo]) => (
                     <TodoItem
@@ -107,9 +98,13 @@ const TodoList = () => {
                     />
                   ))}
               </ul>
-          </div>
-      ))}
-  <Navbar />
+              <div className='ml-8 mb-10'>
+                <Button onClick={() => addItem(eventName, "To-do Item", "", "")}>Add</Button>
+              </div>
+            </div>
+        ))}
+      </div>
+      <Navbar />
     </div>
   );
 };

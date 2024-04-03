@@ -11,6 +11,7 @@ const Home = () => {
   return (
     <div>
       homepage!
+      <Navbar/>
     </div>
   );
 };

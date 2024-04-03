@@ -66,7 +66,7 @@ const SearchClassEventButton = ({onEventAdd}) => {
                         {
                             onEventAdd(
                                 {
-                                    id: item.id,
+                                    id: item.id +'_'+ tmp_num.toString(),
                                     title: item.title,
                                     start: item.start[tmp_num],
                                     end: item.end[tmp_num],

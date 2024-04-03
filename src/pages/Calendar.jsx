@@ -47,7 +47,7 @@ const CalendarPage = () => {
     const [showClickEventPopup, setShowClickEventPopup] = useState(false);
 
     const [showAddEventButtonPopup, setShowAddEventButtonPopup] = useState(false);
-    
+
     //const [showTodoPopup, setShowTodoPopup] = useState(false);
 
     const changeClickedEvent = (aEvent) => {
@@ -90,14 +90,14 @@ const CalendarPage = () => {
     return (
         <>
             <div>
-                <AddEventButtonPopup 
-                    open={showAddEventButtonPopup} 
-                    setOpen={setShowAddEventButtonPopup} 
+                <AddEventButtonPopup
+                    open={showAddEventButtonPopup}
+                    setOpen={setShowAddEventButtonPopup}
                     onEventAdd={onEventAdd}
                 />
             </div>
             <div>
-                <FullCalendar 
+                <FullCalendar
                     ref={calendarRef}
                     plugins={[dayGridPlugin, timeGridPlugin, InteractionPlugin]}
                     initialView="timeGridDay"
@@ -112,7 +112,7 @@ const CalendarPage = () => {
                     eventRemove={onEventRemove}
                     eventAdd={onEventAdd}
                 />
-                <ClickEventPopup 
+                <ClickEventPopup
                     open={showClickEventPopup}
                     setOpen={setShowClickEventPopup}
                     currEvent={clickedEvent}
@@ -129,10 +129,10 @@ export default CalendarPage;
 
 const addExampleCareerItems = (eventNames) => {
 
-        
+
     eventNames.forEach(eventName => {
         const CareerRef = ref(database, 'career');
-        
+
         const exampleCareerItems = [
             {
                 eventName: eventName,
@@ -142,7 +142,7 @@ const addExampleCareerItems = (eventNames) => {
                 location: 'Ford'
             }
         ];
-    
+
         exampleCareerItems.forEach((career) => {
             push(ref(database, `career/${eventName}`), career);
         });
@@ -150,13 +150,13 @@ const addExampleCareerItems = (eventNames) => {
 };
 
     // const addExampleClassItems = (eventNames) => {
-       
+
     //     eventNames.forEach(eventName => {
     //         const ClassRef = ref(database, 'className');
     //         const exampleClassItems = [
     //             {
     //                 eventName: eventName,
-    //                 description: 'Deep Learning taught by Professor Bryan Pardo', 
+    //                 description: 'Deep Learning taught by Professor Bryan Pardo',
     //                 start: '2024-03-4T11:00:00',
     //                 end: '2024-04-3T12:20:00',
     //                 location: 'Tech LR5'
@@ -164,7 +164,7 @@ const addExampleCareerItems = (eventNames) => {
 
     //             {
     //                 eventName: eventName,
-    //                 description: 'Agile Software Development taught by Professor Chris Riesbeck', 
+    //                 description: 'Agile Software Development taught by Professor Chris Riesbeck',
     //                 start: '2024-03-4T9:30:00',
     //                 end: '2024-04-3T10:50:00',
     //                 location: 'Tech LR5'
@@ -172,7 +172,7 @@ const addExampleCareerItems = (eventNames) => {
 
     //             {
     //                 eventName: eventName,
-    //                 description: 'Human Computer Interaction taught by Professor Victoria Chavez', 
+    //                 description: 'Human Computer Interaction taught by Professor Victoria Chavez',
     //                 start: '2024-03-4T14:30:00',
     //                 end: '2024-04-3T16:00:00',
     //                 location: 'Tech LR3'

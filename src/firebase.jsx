@@ -25,7 +25,7 @@ const firebaseConfig = {
 // const app = initializeApp(firebaseConfig);
 
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app); 
+const database = getDatabase(app);
 
 
 
@@ -34,4 +34,3 @@ const database = getDatabase(app);
 export {firebase, database};
 
 // const analytics = getAnalytics(app);
-

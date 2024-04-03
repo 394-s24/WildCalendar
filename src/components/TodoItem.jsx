@@ -116,7 +116,7 @@ export default function TodoItem ({id, date, time, description, eventName, compl
           </>
         ) : (
           <label style={{ textDecoration: isCompleted ? 'line-through' : 'none' }}>
-            {description} - {date} - {time}
+            {editedText} - {editedDate} - {editedTime}
           </label>
         )}
 

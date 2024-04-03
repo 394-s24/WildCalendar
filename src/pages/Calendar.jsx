@@ -7,7 +7,8 @@ import ClickEventPopup from '../components/ClickEventPopup';
 import AddEventButtonPopup from '../components/AddEventPopup';
 import { database } from '../firebase';
 import {ref, onValue, push} from '@firebase/database';
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "../Navigation/Navbar.jsx";
 
 let clickedEvent = {
     id: "randomlyInitializedEvent",
@@ -118,6 +119,7 @@ const CalendarPage = () => {
                     currEvent={clickedEvent}
                     calendarRef={calendarRefCopy}
                 />
+                <Navbar />
             </div>
         </>
     );

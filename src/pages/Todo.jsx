@@ -79,6 +79,7 @@ const TodoList = () => {
   return (
     <div className='w-screen'>
       <div className='mx-auto w-max'>
+       <Navbar />
         <h1 className="text-3xl font-bold p-4">My Todo List</h1>
         {events.map((eventName) => (
             <div key={eventName}>
@@ -104,7 +105,6 @@ const TodoList = () => {
             </div>
         ))}
       </div>
-      <Navbar />
     </div>
   );
 };

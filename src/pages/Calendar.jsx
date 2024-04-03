@@ -90,6 +90,7 @@ const CalendarPage = () => {
 
     return (
         <>
+         <Navbar />
             <div>
                 <AddEventButtonPopup
                     open={showAddEventButtonPopup}
@@ -119,7 +120,6 @@ const CalendarPage = () => {
                     currEvent={clickedEvent}
                     calendarRef={calendarRefCopy}
                 />
-                <Navbar />
             </div>
         </>
     );

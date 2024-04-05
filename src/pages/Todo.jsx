@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import TodoItem from '../components/TodoItem';
 import { database } from '../firebase';
 import {ref, onValue, push, update} from '@firebase/database';
-import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "../Navigation/Navbar.jsx";
+// import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "../components/Navbar.jsx";
 import { Button } from 'antd';
 
 const TodoList = () => {
@@ -78,8 +78,8 @@ const TodoList = () => {
 
   return (
     <div className='w-screen'>
+      <Navbar />
       <div className='mx-auto w-max'>
-       <Navbar />
         <h1 className="text-3xl font-bold p-4">My Todo List</h1>
         {events.map((eventName) => (
             <div key={eventName}>

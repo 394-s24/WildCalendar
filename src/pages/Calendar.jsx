@@ -7,8 +7,8 @@ import ClickEventPopup from '../components/ClickEventPopup';
 import AddEventButtonPopup from '../components/AddEventPopup';
 import { database } from '../firebase';
 import {ref, onValue, push} from '@firebase/database';
-import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "../Navigation/Navbar.jsx";
+// import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "../components/Navbar.jsx";
 import SearchClassEventButton from '../components/SearchClassEventButton.jsx'
 
 let clickedEvent = {
@@ -90,9 +90,10 @@ const CalendarPage = () => {
     }
 
     return (
-        <>
+        <div>
          <Navbar />
-            <div>
+         <div className='p-5'>
+            <div className='flex gap-2 py-4'>
                 <AddEventButtonPopup
                     open={showAddEventButtonPopup}
                     setOpen={setShowAddEventButtonPopup}
@@ -123,7 +124,8 @@ const CalendarPage = () => {
                     calendarRef={calendarRefCopy}
                 />
             </div>
-        </>
+         </div>
+        </div>
     );
 }
 

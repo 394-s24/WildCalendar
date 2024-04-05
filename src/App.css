@@ -3,14 +3,14 @@
 @tailwind utilities;
 /* NAV COMPONENT */
 
-.menu-container 
+.menu-container
 {
   display: flex;
   align-items: flex-start;
   justify-content:space-between;
 
 }
-  
+
   .menu-button {
     background-color: transparent;
     color: blue;
@@ -34,21 +34,21 @@
     text-decoration: none;
   }
 
-  .menu-button-right 
+  .menu-button-right
   {
     align-self: flex-end;
     justify-self: flex-end;
   }
 
-  
+
   .menu {
     background-color: blue;
     border: 1px solid #fff;
     display: flex;
     flex-direction: column;
   }
-  
-  
+
+
 
 
   .menu a {
@@ -61,8 +61,7 @@
     color: #fff;
     text-decoration: none;
   }
-  
+
   .menu a:hover {
     background-color: blue;
   }
-  

@@ -74,11 +74,29 @@ const CalendarPage = () => {
         return calendarRef;
     }
 
-    useEffect(
-        () => {
-            calendarRefCopy = fetchCalendarRef();
-        }, []
-    )
+    useEffect(() => {
+        calendarRefCopy = fetchCalendarRef();
+        const eventRef = ref(database, 'events');
+        const eventListener = onValue(eventRef, (snapshot) =>
+        {
+          const eventData = snapshot.val();
+          if (eventData)
+          {
+            eventsInCalendar(eventData);
+            //setTodos(eventData);
+          }
+        });
+    
+        return () => {
+          eventListener();
+        };
+      }, []);
+
+    // useEffect(
+    //     () => {
+    //         calendarRefCopy = fetchCalendarRef();
+    //     }, []
+    // )
 
     const onEventAdd = (newEvent) => {
         console.log(calendarRef.current, newEvent);
@@ -153,41 +171,41 @@ const addExampleCareerItems = (eventNames) => {
     });
 };
 
-    // const addExampleClassItems = (eventNames) => {
+    const addExampleClassItems = (eventNames) => {
 
-    //     eventNames.forEach(eventName => {
-    //         const ClassRef = ref(database, 'className');
-    //         const exampleClassItems = [
-    //             {
-    //                 eventName: eventName,
-    //                 description: 'Deep Learning taught by Professor Bryan Pardo',
-    //                 start: '2024-03-4T11:00:00',
-    //                 end: '2024-04-3T12:20:00',
-    //                 location: 'Tech LR5'
-    //             },
+        eventNames.forEach(eventName => {
+            const ClassRef = ref(database, 'className');
+            const exampleClassItems = [
+                {
+                    eventName: eventName,
+                    description: 'Deep Learning taught by Professor Bryan Pardo',
+                    start: '2024-03-4T11:00:00',
+                    end: '2024-04-3T12:20:00',
+                    location: 'Tech LR5'
+                },
 
-    //             {
-    //                 eventName: eventName,
-    //                 description: 'Agile Software Development taught by Professor Chris Riesbeck',
-    //                 start: '2024-03-4T9:30:00',
-    //                 end: '2024-04-3T10:50:00',
-    //                 location: 'Tech LR5'
-    //             },
+                {
+                    eventName: eventName,
+                    description: 'Agile Software Development taught by Professor Chris Riesbeck',
+                    start: '2024-03-4T9:30:00',
+                    end: '2024-04-3T10:50:00',
+                    location: 'Tech LR5'
+                },
 
-    //             {
-    //                 eventName: eventName,
-    //                 description: 'Human Computer Interaction taught by Professor Victoria Chavez',
-    //                 start: '2024-03-4T14:30:00',
-    //                 end: '2024-04-3T16:00:00',
-    //                 location: 'Tech LR3'
-    //             },
-    //         ];
+                {
+                    eventName: eventName,
+                    description: 'Human Computer Interaction taught by Professor Victoria Chavez',
+                    start: '2024-03-4T14:30:00',
+                    end: '2024-04-3T16:00:00',
+                    location: 'Tech LR3'
+                },
+            ];
 
-    //         exampleClassItems.forEach((className) => {
-    //             push(ref(database, `class/${eventName}`), className);
-    //         });
-    //     })
-    // }
+            exampleClassItems.forEach((className) => {
+                push(ref(database, `class/${eventName}`), className);
+            });
+        })
+    }
     // useEffect(() => {
     //     addExampleCareerItems(['Career Day Fair']);
     //     addExampleClassItems(['CS449', 'CS394', 'CS330']);

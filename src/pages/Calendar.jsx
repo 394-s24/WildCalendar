@@ -7,7 +7,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import ClickEventPopup from '../components/ClickEventPopup';
 import AddEventButtonPopup from '../components/AddEventPopup';
 import { database } from '../firebase';
-import {ref, onValue, push} from '@firebase/database';
 // import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../components/Navbar.jsx";
 import SearchClassEventButton from '../components/SearchClassEventButton.jsx'

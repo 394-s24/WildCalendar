@@ -295,6 +295,7 @@ const CalendarPage = () => {
                     eventChange={onEventChange}
                     eventRemove={onEventRemove}
                     eventAdd={onEventAdd}
+                    eventColor='#20025a'
                 />
                 <ClickEventPopup
                     open={showClickEventPopup}

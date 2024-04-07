@@ -1,20 +1,10 @@
-import { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import TodoList from './pages/Todo';
 import CalendarPage from './pages/Calendar';
-import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "./Navigation/Navbar.jsx";
-
-const Home = () => {
-  return (
-    <div>
-      homepage!
-      <Navbar/>
-    </div>
-  );
-};
+// import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from './components/Navbar';
+import Home from "./pages/Home"
 
 const App = () => {
 

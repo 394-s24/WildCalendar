@@ -7,8 +7,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import ClickEventPopup from '../components/ClickEventPopup';
 import AddEventButtonPopup from '../components/AddEventPopup';
 import { database } from '../firebase';
-import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "../Navigation/Navbar.jsx";
+import {ref, onValue, push} from '@firebase/database';
+// import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from "../components/Navbar.jsx";
 import SearchClassEventButton from '../components/SearchClassEventButton.jsx'
 import { ref, update, push, remove, onValue } from '@firebase/database';
 import { message } from 'antd'
@@ -268,10 +269,11 @@ const CalendarPage = () => {
     }
 
     return (
-        <>
+        <div>
          {contextHolder}
          <Navbar />
-            <div>
+         <div className='p-5'>
+            <div className='flex gap-2 py-4'>
                 <AddEventButtonPopup
                     open={showAddEventButtonPopup}
                     setOpen={setShowAddEventButtonPopup}
@@ -302,7 +304,8 @@ const CalendarPage = () => {
                     calendarRef={calendarRefCopy}
                 />
             </div>
-        </>
+         </div>
+        </div>
     );
 }
 

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { AutoComplete, Button } from 'antd';
+import { AutoComplete } from 'antd';
+import { Button } from '@/components/ui/button'
 
 // const class_list = [
 //     {
@@ -42,13 +43,13 @@ const SearchClassEventButton = ({onEventAdd, class_list}) => {
                         ...tmp_list,
                         {value: key}
                     ]
-                } 
+                }
             }
         )
         return tmp_list;
     }
 
-    const getPanelValue = (searchText) => 
+    const getPanelValue = (searchText) =>
     {
         let tmp_list = match_class_name(searchText);
         return !searchText ? [] : tmp_list;
@@ -84,7 +85,7 @@ const SearchClassEventButton = ({onEventAdd, class_list}) => {
 
     return (
         <>
-            <Button type="primary" size="large" onClick={onButtonClick}>
+            <Button type="default" onClick={onButtonClick}>
                 Search for a Class
             </Button>
             {showSearchBox ?

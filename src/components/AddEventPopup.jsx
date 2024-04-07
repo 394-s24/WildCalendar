@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Modal, Form, DatePicker, Input } from 'antd';
+import { Modal, Form, DatePicker, Input } from 'antd';
+import { Button } from '@/components/ui/button'
 
 const rangeConfig = {
     rules: [
@@ -53,7 +54,7 @@ const AddEventButtonPopup = ({open, setOpen, calendarRef}) => {
     };
     return (
         <>
-            <Button type="primary" size="large" onClick={showModal}>
+            <Button type="primary" onClick={showModal}>
                 Create Event
             </Button>
             <Modal
@@ -76,9 +77,9 @@ const AddEventButtonPopup = ({open, setOpen, calendarRef}) => {
                         <Input/>
                     </Form.Item>
                     <Form.Item name="range-picker" label="Time" {...rangeConfig}>
-                        <RangePicker 
-                            {...rangeConfig} 
-                            showTime 
+                        <RangePicker
+                            {...rangeConfig}
+                            showTime
                             format={dateTimeFormat}
                         />
                     </Form.Item>

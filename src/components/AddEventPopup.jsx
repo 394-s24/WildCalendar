@@ -16,7 +16,11 @@ const { RangePicker } = DatePicker;
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm:ss";
 
-const AddEventButtonPopup = ({open, setOpen, onEventAdd}) => {
+const uuid = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+const AddEventButtonPopup = ({open, setOpen, calendarRef}) => {
 
     //const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
@@ -35,15 +39,18 @@ const AddEventButtonPopup = ({open, setOpen, onEventAdd}) => {
     }
 
     const handleOk = (fieldsValue) => {
+        let newId = uuid();
         let values = {
             'title': fieldsValue['title'],
             'start': fieldsValue['range-picker'][0].format(dateTimeFormat),
             'end': fieldsValue['range-picker'][1].format(dateTimeFormat),
-            'description': (fieldsValue['description'] ? fieldsValue['description'] : "")
+            'description': (fieldsValue['description'] ? fieldsValue['description'] : ""),
+            'id': newId,
+            'groupId': '',
+            'NWUClass': false
         };
         setOpen(false);
-        console.log(values);
-        onEventAdd(values);
+        calendarRef.current.getApi().addEvent(values);
     };
     return (
         <>

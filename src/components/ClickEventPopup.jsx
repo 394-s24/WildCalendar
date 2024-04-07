@@ -95,6 +95,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     };
 
     const getMostRecentRange = () => {
+        //console.log(currEvent.extendedProps)
         if(calendarRef != null)
         {
             let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
@@ -136,7 +137,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                         >
                             <Button>Delete</Button>
                         </Popconfirm>
-                        <Button onClick={onClickEditButton}>Edit</Button>
+                        <Button onClick={onClickEditButton} disabled={currEvent.extendedProps.NWUClass}>Edit</Button>
                         <CancelBtn />
                         <OkBtn />
                     </>
@@ -161,10 +162,10 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                             {...rangeConfig} 
                             showTime 
                             format={dateTimeFormat}
-                            defaultValue={[
+                            defaultValue={clickedEdit ? [
                                 dayjs(getMostRecentRange()[0], dateTimeFormat), 
                                 dayjs(getMostRecentRange()[1], dateTimeFormat)
-                            ]}
+                            ] : []}
                             onChange={(e) => {
                                 if(e != null)
                                 {
@@ -195,11 +196,14 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 
             ) : (
                 <>
-                    <div>
-                        Start: {getMostRecentRange()[0]}
-                        <Divider type="vertical" />
-                        End: {getMostRecentRange()[1]}
-                    </div>
+                    {currEvent.groupId !== '' ? <></> : (
+                        <div>
+                            Start: {getMostRecentRange()[0]}
+                            <Divider type="vertical" />
+                            End: {getMostRecentRange()[1]}
+                        </div>
+                    )}
+                    
                     {
                         (descCopy.length > 0) ?
                         (

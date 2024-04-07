@@ -15,6 +15,7 @@
     "@fullcalendar/interaction": "^6.1.11",
     "@fullcalendar/list": "^6.1.11",
     "@fullcalendar/react": "^6.1.11",
+    "@fullcalendar/rrule": "^6.1.11",
     "@fullcalendar/timegrid": "^6.1.11",
     "antd": "^5.16.0",
     "bootstrap": "^5.3.3",

@@ -1,6 +1,5 @@
-import Navbar from '@/components/Navbar';
 import Calendar from "@/assets/UndrawCalendar.svg";
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/Button"
 
 function Hero() {
 
@@ -8,7 +7,6 @@ function Hero() {
     <div className="relative w-screen bg-popover border-b">
       {/* Navbar will be fixed at the top */}
       <div className="fixed bg-popover md:border-0 top-0 w-full z-50">
-        <Navbar />
       </div>
 
       {/* Hero image container */}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, DatePicker, Input } from 'antd';
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button'
 
 const rangeConfig = {
     rules: [

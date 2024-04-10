@@ -10,6 +10,8 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@fullcalendar/core": "^6.1.11",
     "@fullcalendar/daygrid": "^6.1.11",
     "@fullcalendar/interaction": "^6.1.11",
@@ -17,6 +19,8 @@
     "@fullcalendar/react": "^6.1.11",
     "@fullcalendar/rrule": "^6.1.11",
     "@fullcalendar/timegrid": "^6.1.11",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
     "@radix-ui/react-slot": "^1.0.2",
     "antd": "^5.16.0",
     "class-variance-authority": "^0.7.0",

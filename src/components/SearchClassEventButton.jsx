@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { AutoComplete } from 'antd';
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/Button'
 
 // const class_list = [
 //     {
@@ -84,27 +84,17 @@ const SearchClassEventButton = ({onEventAdd, class_list}) => {
     };
 
     return (
-        <>
-            <Button type="default" onClick={onButtonClick}>
-                Search for a Class
-            </Button>
-            {showSearchBox ?
-                (<AutoComplete
-                    options={options}
-                    style={{
-                        width: 300,
-                    }}
-                    onSelect={onSelect}
-                    value={value}
-                    onChange={onChange}
-                    onSearch={(text) => {setOptions(getPanelValue(text));}}
-                    placeholder="Search for class"
-                />
-                ) :(
-                    <></>
-                )
-            }
-        </>
+      <AutoComplete
+          options={options}
+          style={{
+              width: 300,
+          }}
+          onSelect={onSelect}
+          value={value}
+          onChange={onChange}
+          onSearch={(text) => {setOptions(getPanelValue(text));}}
+          placeholder="Search for classes"
+      />
     );
 };
 export default SearchClassEventButton;

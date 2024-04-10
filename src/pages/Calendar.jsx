@@ -7,8 +7,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import ClickEventPopup from '../components/ClickEventPopup';
 import AddEventButtonPopup from '../components/AddEventPopup';
 import { database } from '../firebase';
-// import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from "../components/Navbar.jsx";
 import SearchClassEventButton from '../components/SearchClassEventButton.jsx'
 import { ref, update, push, remove, onValue } from '@firebase/database';
 import { message } from 'antd'
@@ -105,6 +103,20 @@ const CalendarPage = () => {
     const [showAddEventButtonPopup, setShowAddEventButtonPopup] = useState(false);
 
     const [messageApi, contextHolder] = message.useMessage();
+
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
 
     const addRecurringError = () => {
         messageApi.open({
@@ -268,27 +280,49 @@ const CalendarPage = () => {
     }
 
     return (
-        <div>
+      // <div className={`justify-center relative z-0 top-full gap-4 sm:gap-0 right-0 left-0 flex flex-row items-center`}>
+
+        <div className="max-w-6xl m-6 xl:mx-auto justify-center">
          {contextHolder}
-         <Navbar />
-         <div className='p-5'>
-            <div className='flex gap-2 py-4'>
-                <AddEventButtonPopup
-                    open={showAddEventButtonPopup}
-                    setOpen={setShowAddEventButtonPopup}
-                    calendarRef={calendarRefCopy}
-                />
-                <SearchClassEventButton onEventAdd={addanEvent} class_list={class_list}/>
-            </div>
+         <div className='flex flex-col gap-4'>
+            <SearchClassEventButton onEventAdd={addanEvent} class_list={class_list}/>
+            <AddEventButtonPopup
+                open={showAddEventButtonPopup}
+                setOpen={setShowAddEventButtonPopup}
+                calendarRef={calendarRefCopy}
+            />    
             <div>
                 <FullCalendar
                     ref={calendarRef}
                     plugins={[dayGridPlugin, timeGridPlugin, InteractionPlugin, rrulePlugin]}
                     initialView="timeGridDay"
-                    headerToolbar={{
-                        center:"timeGridWeek,timeGridDay"
+                    titleFormat={{
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric'
+                    }}
+                    headerToolbar={
+                      windowWidth > 640
+                        ? {
+                            start: 'prev,next today',
+                            center: 'title',
+                            end: 'timeGridWeek,timeGridDay,dayGridMonth'
+                          }
+                        : {
+                            start: 'prev title next',
+                            end: 'today timeGridWeek,timeGridDay,dayGridMonth'
+                          }
+                    }
+                    buttonText={{
+                      today: 'Today',
+                      month: 'Month',
+                      week: 'Week',
+                      day: 'Day',
+                      list: 'List'
                     }}
                     editable
+                    expandRows
+                    aspectRatio={0.8}
                     timeZone='UTC'
                     events = {eventsInCalendar}
                     eventClick={onEventClickCustom}

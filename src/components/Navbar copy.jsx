@@ -1,4 +1,3 @@
-
 /* eslint-disable react/no-unknown-property */
 import { useState, useEffect } from 'react';
 import Logo from "@/assets/CalendarIcon.png"
@@ -28,7 +27,7 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className={`bg-white border-b z-50 px-6  ${scrolled && "border-b-2"} ${scrolled && !isMobileMenuOpen && "py-2"} ${!scrolled && isMobileMenuOpen ? "" : "transition-colors duration-300"} ${!scrolled && isMobileMenuOpen && "border-b-2"} ${scrolled || isMobileMenuOpen ? 'py-4' : 'py-4'}`}>
+    <nav className={`bg-white border-b z-50 px-6 sm:px-8 ${scrolled && "border-b-2"} ${scrolled && !isMobileMenuOpen && "py-2"} ${!scrolled && isMobileMenuOpen ? "" : "transition-colors duration-300"} ${!scrolled && isMobileMenuOpen && "border-b-2"} ${scrolled || isMobileMenuOpen ? 'py-4' : 'py-4'}`}>
       {/* Mobile Menu */}
       <div className={`sm:hidden justify-center relative z-0 top-full gap-4 sm:gap-0 right-0 left-0 text-viridian flex flex-row items-center py-4 transition-all ${isMobileMenuOpen ? 'translate-y-0' : '-translate-y-[100%] opacity-0 max-h-[0px]'}`}>
         <a href="/#how-it-works" className="border-2 rounded-full px-4 py-1 mx-4 hover:opacity-75 transition-all duration-300" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>How it Works</a>

@@ -21,7 +21,7 @@ const convertDateToStr = (aDate) => {
     return (str1.length > 0 ? str2 : "");
   }
 
-const dateTimeFormat = "YYYY-MM-DD HH:mm:ss";
+const dateTimeFormat = "YYYY-MM-DD HH:mm";
 
 const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     
@@ -158,22 +158,8 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                         Edit Start and End: 
                     </div>
                     <Row>
-                        <RangePicker 
-                            {...rangeConfig} 
-                            showTime 
-                            format={dateTimeFormat}
-                            defaultValue={clickedEdit ? [
-                                dayjs(getMostRecentRange()[0], dateTimeFormat), 
-                                dayjs(getMostRecentRange()[1], dateTimeFormat)
-                            ] : []}
-                            onChange={(e) => {
-                                if(e != null)
-                                {
-                                    setRangePickerBuffer(e);
-                                }
-                            }}
-                            status={rangePickerStatus}
-                        />
+                        <DatePicker onChange={onChange} />
+                        <p>test</p>
                     </Row>
                     {
                         <>

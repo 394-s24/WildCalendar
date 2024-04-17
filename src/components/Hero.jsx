@@ -4,8 +4,7 @@ import { Button } from "@/components/Button"
 function Hero() {
 
   return (
-    <div className="relative w-screen bg-popover border-b">
-      {/* Navbar will be fixed at the top */}
+    <div className="relative w-screen bg-popover border-b pt-12">
       <div className="fixed bg-popover md:border-0 top-0 w-full z-50">
       </div>
 
@@ -23,6 +22,7 @@ function Hero() {
                   <Button>Go to Calendar</Button>
                 </a>
                 <p>or your <a href="/todo" className="font-bold hover:opacity-50 transition">Todo List</a></p>
+
               </div>
             </div>
           </div>

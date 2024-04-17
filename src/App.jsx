@@ -1,4 +1,4 @@
-import './App.css';
+
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import TodoList from './pages/Todo';
 import CalendarPage from './pages/Calendar';
@@ -6,6 +6,7 @@ import Layout from "./pages/Layout";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from './components/Navbar';
 import Home from "./pages/Home"
+import './App.css';
 
 const App = () => {
   return (

@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -16,7 +17,15 @@ module.exports = {
         "2xl": "1400px",
       },
     },
+    fontFamily: {
+      'sans': ['Montserrat', 'sans-serif'],
+      // ...
+    },
+    // ... 
     extend: {
+      fontFamily: {
+        'montserrat': ['Montserrat', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

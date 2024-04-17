@@ -6,6 +6,16 @@
 .fc-toolbar-chunk {
   margin-top: 1em;
 }
+
+.fc-header-toolbar .fc-center {
+  display: block !important; 
+}
+
+
+.grid-cols-sidebar-main {
+  grid-template-columns: 64px auto;
+}
+
 @media (max-width: 640px) {
   .fc-header-toolbar {
     flex-wrap: wrap;
@@ -15,6 +25,10 @@
     display: flex;
     justify-content: center;
   }
+}
+
+h2 {
+  position:relative;
 }
 
 .menu-container

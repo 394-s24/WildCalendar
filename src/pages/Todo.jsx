@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import TodoItem from '../components/TodoItem';
 import { database } from '../firebase';
 import {ref, onValue, push, update} from '@firebase/database';
-// import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from 'antd';
+import TodoSidebar from "../components/TodoSidebar";
 
 const TodoList = () => {
 
@@ -74,10 +74,14 @@ const TodoList = () => {
       fetchTodosByEvent(eventName);
     });
   }, [events]);
-
+  
   return (
-    <div className='w-screen'>
-      <div className='mx-auto w-max'>
+    <div className="mx-auto flex">
+      <div className="fixed h-screen">
+        <TodoSidebar />
+      </div>
+      <div className="pt-24 px-2 sm:px-4 sm:ps-20 lg:ps-64 flex-grow w-screen mx-auto">
+        <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold p-4">My Todo List</h1>
         {events.map((eventName) => (
             <div key={eventName}>
@@ -102,6 +106,7 @@ const TodoList = () => {
               </div>
             </div>
         ))}
+        </div>
       </div>
     </div>
   );

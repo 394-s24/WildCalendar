@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AutoComplete } from "antd";
 
-const ClassSearch = () => {
+const ClassSearch = ({ calendarRef }) => {
   const [options, setOptions] = useState([]);
   const cs_classes_list = [
     "COMP_SCI 101-0 Computer Science: Concepts, Philosophy, and Connections",
@@ -59,6 +59,9 @@ const ClassSearch = () => {
     "COMP_SCI 355-0 Digital Forensics and Incident Response",
     "COMP_SCI 367-0 Wireless and Mobile Health: Passive Sensing Data Analytics",
   ];
+  const [selectedClass, setSelectedClass] = useState('');
+
+  const dateTimeFormat = "YYYY-MM-DD HH:mm";
 
   const handleSearch = (value) => {
     if (value === '') {
@@ -72,19 +75,55 @@ const ClassSearch = () => {
   }
 
   const onSelect = (value) => {
-    console.log(value)
+    console.log(value);
+    setSelectedClass(value);
+    addClassEvent();
+
+  }
+
+  const addClassEvent = () => {
+    console.log(selectedClass);
+    const startClass = new Date();
+    const endClass = new Date();
+    startClass.setHours(9);
+    startClass.setMinutes(30);
+
+    endClass.setHours(11);
+    endClass.setMinutes(0);
+
+    console.log(calendarRef);
+    calendarRef.current.getApi().addEvent({
+      title: selectedClass,
+      start: startClass,
+      end: endClass,
+      daysOfWeek: [2, 4],
+      startRecur: "2024-03-25",
+      endRecur: "2024-06-05",
+      editable: false,
+      NWUClass: true,
+      description: "sample class event",
+    });
   }
 
   return (
-    <AutoComplete
-      style={{
-        width: 200,
-      }}
-      options={options}
-      onSearch={handleSearch}
-      onSelect={onSelect}
-      placeholder="Search for Classes"
-    />
+    <>
+      <AutoComplete
+        style={{
+          width: 200,
+        }}
+        options={options}
+        onSearch={handleSearch}
+        onSelect={onSelect}
+        placeholder="Search for Classes"
+      />
+      {selectedClass !== '' && (
+        <div>
+          <div className="h-20 w-full flex justify-center items-center text-lg bg-gray-100 rounded-lg mt-2" onClick={addClassEvent}>
+            <p className="text-center">9:30am - 10:30am</p>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 export default ClassSearch;

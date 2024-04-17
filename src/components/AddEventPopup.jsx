@@ -61,7 +61,8 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
       NWUClass: false,
     };
     setOpen(false);
-    console.log(calendarRef)
+    console.log(calendarRef);
+    console.log(values);
     calendarRef.current.getApi().addEvent(values);
   };
   return (
@@ -122,3 +123,28 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
   );
 };
 export default AddEventButtonPopup;
+
+
+
+// {title: 'ddd', start: '2024-04-18 04:30', end: '2024-04-18 19:55', description: 'tester', id: 'lv3cm76ge7rz4fsugcm', …}
+// NWUClass
+// : 
+// false
+// description
+// : 
+// "tester"
+// end
+// : 
+// "2024-04-18 19:55"
+// groupId
+// : 
+// ""
+// id
+// : 
+// "lv3cm76ge7rz4fsugcm"
+// start
+// : 
+// "2024-04-18 04:30"
+// title
+// : 
+// "ddd"

@@ -1,7 +1,6 @@
 import { Button } from "@/components/Button";
-import ClassSearch from "./ClassSearch.jsx";
+import ClassSearch from "../components/ClassSearch";
 import AddEventButtonPopup from "../components/AddEventPopup";
-import AddEventAlt from "../components/AddEventPopupAlt";
 import {
   SettingOutlined,
   FilterOutlined,
@@ -71,7 +70,7 @@ const Sidebar = ({ calendarRef }) => {
         open={searchMenuOpen}
         onCancel={handleCancel}
       >
-        <ClassSearch />
+        <ClassSearch calendarRef={calendarRef}/>
       </Modal>
       {/* med */}
       <div className="my-10 px-3 hidden sm:flex lg:hidden flex-col justify-center items-center gap-4">
@@ -96,7 +95,7 @@ const Sidebar = ({ calendarRef }) => {
       <div className="my-10 hidden lg:flex flex-col justify-center gap-6 items-center px-3">
         <div className="bg-gray-200 p-2 flex flex-col justify-center rounded-md text-sm font-medium w-full">
           <p className="ms-1 mb-2 text-[16px]">Add Classes</p>
-          <ClassSearch />
+          <ClassSearch calendarRef={calendarRef}/>
 
           <div className="flex justify-start items-start mt-1">
             <Button variant="outline" size="tester">

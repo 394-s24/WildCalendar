@@ -186,6 +186,7 @@ const CalendarPage = () => {
 
   const onEventAdd = async (addInfo) => {
     console.log("onAdd!");
+    console.log(addInfo)
     let newEvent = addInfo.event.toPlainObject({ collapseExtendedProps: true });
     // if (
     //   recurringEvent.id === newEvent.id &&

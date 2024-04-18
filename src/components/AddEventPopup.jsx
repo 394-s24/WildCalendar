@@ -52,6 +52,9 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
     calendarRef.current.getApi().addEvent(values);
   };
 
+  
+
+
   return (
     <>
       {buttonType === "scr_small" ? (
@@ -98,12 +101,11 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
               className='w-full'></Checkbox>
           </Form.Item>
 
-          
-
-
-          {recur && (<Form.Item name="date-picker" label="Date">
+          {!recur && (<Form.Item name="date-picker" label="Date">
             <DatePicker />
           </Form.Item>)}
+
+          {!recur && (
           <Form.Item name="time-picker" label="Time">
             <TimePicker.RangePicker
               format="HH:mm A"
@@ -111,9 +113,35 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
               hourStep={1}
               hideDisabledOptions
             />
-          </Form.Item>
+          </Form.Item>)}
+
+
+          {recur && 
+
+          (<Form.Item name="date-picker" label="Start Date">
+            <DatePicker />
+          </Form.Item>)
+  
+          }
+
+          {recur && 
+              (<Form.Item name="date-picker" label="End Date">
+               <DatePicker />
+              </Form.Item>)}
+
+          {recur && (
+          <Form.Item name="time-picker" label="Time">
+            <TimePicker.RangePicker
+              format="HH:mm A"
+              minuteStep={5}
+              hourStep={1}
+              hideDisabledOptions
+            />
+          </Form.Item>)}
+
+
           
-          <Form.Item label="Recurring" name="disabled" valuePropName="checked">
+          {recur && (<Form.Item label="Recurring" name="disabled" valuePropName="checked">
             <Checkbox className='w-full'>Sunday</Checkbox>
             <Checkbox className='w-full'>Monday</Checkbox>
             <Checkbox className='w-full'>Tuesday</Checkbox>
@@ -121,7 +149,8 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
             <Checkbox className='w-full'>Thursday</Checkbox>
             <Checkbox className='w-full'>Friday</Checkbox>
             <Checkbox className='w-full'>Saturday</Checkbox>
-          </Form.Item>
+          </Form.Item>) }
+
           <Form.Item label="Description" name="description">
             <Input />
           </Form.Item>

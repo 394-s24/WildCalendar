@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Form, DatePicker, Input, TimePicker } from "antd";
+import { Modal, Form, DatePicker, Input, TimePicker, Checkbox } from "antd";
 import { Button } from "@/components/Button";
 import { PlusOutlined } from "@ant-design/icons";
 
@@ -46,19 +46,21 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
     };
     setOpen(false);
     console.log(calendarRef);
-    console.log('Vals obj here')
+    console.log("Vals obj here");
     console.log(values);
     calendarRef.current.getApi().addEvent(values);
   };
 
   return (
     <>
-      {buttonType === 'scr_small' ? (
+      {buttonType === "scr_small" ? (
         <Button variant="outline" size="sm" onClick={showModal}>
           <PlusOutlined />
         </Button>
       ) : (
-        <Button type="primary" onClick={showModal}>Add Event</Button>
+        <Button type="primary" onClick={showModal}>
+          Add Event
+        </Button>
       )}
       <Modal
         title="Create an Event"
@@ -98,6 +100,18 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
               hourStep={1}
               hideDisabledOptions
             />
+          </Form.Item>
+          <Form.Item label="Recur?" name="disabled" valuePropName="checked">
+            
+          </Form.Item>
+          <Form.Item label="Recurring" name="disabled" valuePropName="checked">
+            <Checkbox className='w-full'>Sunday</Checkbox>
+            <Checkbox className='w-full'>Monday</Checkbox>
+            <Checkbox className='w-full'>Tuesday</Checkbox>
+            <Checkbox className='w-full'>Wednesday</Checkbox>
+            <Checkbox className='w-full'>Thursday</Checkbox>
+            <Checkbox className='w-full'>Friday</Checkbox>
+            <Checkbox className='w-full'>Saturday</Checkbox>
           </Form.Item>
           <Form.Item label="Description" name="description">
             <Input />

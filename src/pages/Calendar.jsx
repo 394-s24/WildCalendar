@@ -160,7 +160,7 @@ const CalendarPage = () => {
                 InteractionPlugin,
                 rrulePlugin,
               ]}
-              initialView="timeGridDay"
+              initialView="timeGridWeek"
               titleFormat={{
                 year: "numeric",
                 month: "long",

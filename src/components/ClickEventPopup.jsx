@@ -24,7 +24,7 @@ const convertDateToStr = (aDate) => {
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 
 const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
-    
+
     const [rangePickerBuffer, setRangePickerBuffer] = useState([]);
     const [rangePickerStatus, setRangePickerStatus] = useState("")
     const [inputBoxModDescBuffer, setInputBoxModDescBuffer] = useState("");
@@ -42,21 +42,23 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     };
 
     const onModalOpenChange = () => {
-        if(open)
+        if(open && calendarRef != null && calendarRef.current != null)
         {
             let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
             setDescCopy(event1.extendedProps.description);
             setRangePickerBuffer(
-                [dayjs(currEvent.start, dateTimeFormat), 
+                [dayjs(currEvent.start, dateTimeFormat),
                     dayjs(currEvent.end, dateTimeFormat)
                 ]);
         }
     };
 
     const onClickDelete = () => {
-        let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
-        event1.remove();
-        setOpen(false);
+        if (calendarRef != null && calendarRef.current != null) {
+          let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
+          event1.remove();
+          setOpen(false);
+        }
     };
 
     const onClosingCompletely = () => {
@@ -67,26 +69,30 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     };
 
     const onClickEditButton = () => {
+      if (calendarRef != null && calendarRef.current != null) {
         let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
         setDescCopy(event1.extendedProps.description);
         setClickedEdit(true);
+      }
     };
 
     const onClickFinishButton = () => {
-        let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
-        if(rangePickerBuffer != null && rangePickerBuffer.length === 2)
-        {
-            setClickedEdit(false);
-            setRangePickerStatus("");
-            event1.setStart(rangePickerBuffer[0].format("YYYY-MM-DDTHH:mm:ss"));
-            event1.setEnd(rangePickerBuffer[1].format("YYYY-MM-DDTHH:mm:ss"));
+        if (calendarRef != null && calendarRef.current != null) {
+          let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
+          if(rangePickerBuffer != null && rangePickerBuffer.length === 2)
+          {
+              setClickedEdit(false);
+              setRangePickerStatus("");
+              event1.setStart(rangePickerBuffer[0].format("YYYY-MM-DDTHH:mm:ss"));
+              event1.setEnd(rangePickerBuffer[1].format("YYYY-MM-DDTHH:mm:ss"));
+          }
+          else
+          {
+              setRangePickerStatus("error");
+          }
+          event1.setExtendedProp("description", inputBoxModDescBuffer);
+          setDescCopy(event1.extendedProps.description);
         }
-        else
-        {
-            setRangePickerStatus("error");
-        }
-        event1.setExtendedProp("description", inputBoxModDescBuffer);
-        setDescCopy(event1.extendedProps.description);
     };
 
     const onClickCancelEditButton = () => {
@@ -96,14 +102,14 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
 
     const getMostRecentRange = () => {
         console.log(currEvent)
-        if(calendarRef != null)
+        if(calendarRef != null && calendarRef.current != null)
         {
             let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
             if(event1 != null)
             {
                 // return [convertDateToStr(event1.start), convertDateToStr(event1.end)];
             }
-                
+
         }
         return [];
     }
@@ -117,14 +123,14 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
             onCancel={handleCancel}
             afterOpenChange={onModalOpenChange}
             afterClose={onClosingCompletely}
-            footer={clickedEdit ? 
+            footer={clickedEdit ?
                 (_, { OkBtn, CancelBtn }) => (
                     <>
                         <Button onClick={onClickFinishButton} type="primary">Finish</Button>
                         <Button onClick={onClickCancelEditButton} danger>Cancel Edit</Button>
                     </>
                 )
-                : 
+                :
                 (_, { OkBtn, CancelBtn }) => (
                     <>
                         <Popconfirm
@@ -151,11 +157,11 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 ) : (
                     <></>
             )}
-            
+
             {clickedEdit ? (
                 <>
                     <div>
-                        Edit Start and End: 
+                        Edit Start and End:
                     </div>
                     <Row>
                         <DatePicker onChange={onChange} />
@@ -164,10 +170,10 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                     {
                         <>
                             <div>
-                                Edit Event Description: 
+                                Edit Event Description:
                             </div>
                             <Row>
-                                <Input 
+                                <Input
                                     defaultValue={descCopy}
                                     onChange={(e) => {
                                         setInputBoxModDescBuffer(e.target.value);
@@ -179,7 +185,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                         </>
                     }
                 </>
-                
+
             ) : (
                 <>
                     {currEvent.groupId !== '' ? <></> : (
@@ -189,7 +195,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                             End: {getMostRecentRange()[1]}
                         </div>
                     )}
-                    
+
                     {
                         (descCopy.length > 0) ?
                         (
@@ -202,7 +208,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                     }
                 </>
             )}
-            
+
         </Modal>
     );
 };

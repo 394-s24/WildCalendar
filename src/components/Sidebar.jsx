@@ -118,10 +118,10 @@ const Sidebar = ({ calendarRef }) => {
             buttonType="default"
           />
         </div>
-        <div className="hover:bg-gray-100 transition-colors px-3 py-2 flex flex-row justify-start items-center rounded-md text-sm font-medium w-full">
+        <Button variant="secondary" className="w-full flex justify-start">
           <SettingOutlined />
           <p className="ms-2 text-[16px]">Settings</p>
-        </div>
+        </Button>
       </div>
     </nav>
   );

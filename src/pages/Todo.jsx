@@ -33,6 +33,24 @@ const TodoList = () => {
           });
   };
 
+  const [editedText, setEditedText] = useState("");
+
+  const addCategory = ({eventName}) =>
+    {
+      console.log("AddCat")
+
+      const newTodoRef = ref(database, `todo/${eventName}`);
+
+      const updates = {};
+
+      updates[`/todo/${eventName}`] = {};
+
+      return update(newTodoRef, updates)
+          .catch((error) => {
+              console.error("Error adding new category: ", error);
+          });
+  };
+
   useEffect(() => {
     const eventRef = ref(database, 'todo');
     const eventListener = onValue(eventRef, (snapshot) =>
@@ -101,13 +119,17 @@ const TodoList = () => {
                     />
                   ))}
               </ul>
-              <div className='ml-8 mb-10'>
-                <Button onClick={() => addItem(eventName, "To-do Item", "", "")}>Add</Button>
-              </div>
             </div>
         ))}
+        <div>
+          <input type="category text" value={editedText} onChange={(e) => setEditedText(e.target.value)} />
+          <Button onClick={() => {addCategory(editedText)}}>Add Category</Button>
+        </div>
         </div>
       </div>
+
+      
+
     </div>
   );
 };

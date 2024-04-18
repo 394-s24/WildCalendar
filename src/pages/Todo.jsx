@@ -35,20 +35,17 @@ const TodoList = () => {
 
   const [editedText, setEditedText] = useState("");
 
-  const addCategory = ({eventName}) =>
+  const addCategory = ( eventName ) =>
     {
-      console.log("AddCat")
+      console.log("AddCat");
 
-      const newTodoRef = ref(database, `todo/${eventName}`);
+      const firstData = {
+        description: "Description",
+        date: "2024-04-01",
+        time: "10:00",
+      };
 
-      const updates = {};
-
-      updates[`/todo/${eventName}`] = {};
-
-      return update(newTodoRef, updates)
-          .catch((error) => {
-              console.error("Error adding new category: ", error);
-          });
+      addItem(eventName, firstData.description, firstData.date, firstData.time);
   };
 
   useEffect(() => {
@@ -92,7 +89,7 @@ const TodoList = () => {
       fetchTodosByEvent(eventName);
     });
   }, [events]);
-  
+
   return (
     <div className="mx-auto flex">
       <div className="fixed h-screen">
@@ -121,15 +118,15 @@ const TodoList = () => {
               </ul>
             </div>
         ))}
-        <div>
-          <input type="category text" value={editedText} onChange={(e) => setEditedText(e.target.value)} />
-          <Button onClick={() => {addCategory(editedText)}}>Add Category</Button>
+        <div className='max-w-[35rem]'>
+          <div className='flex flex-col gap-2 w-max mx-auto'>
+            <p>Category Name:</p>
+            <input type="category text" className='border rounded-sm ' value={editedText} onChange={(e) => setEditedText(e.target.value)} />
+            <Button onClick={() => addCategory(editedText)}>Add Category</Button>
+          </div>
         </div>
         </div>
       </div>
-
-      
-
     </div>
   );
 };

@@ -11,16 +11,24 @@ import {
 } from "@mui/material";
 import Logo from "@/assets/CalendarIcon.png";
 import { Button } from "@/components/Button";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-const ButtonLink = ({ href, variant, children }) => (
-  <Link
-    to={href}
-    className="hidden sm:flex rounded-full hover:opacity-90 transition-all duration-300"
-  >
-    <Button variant={variant}>{children}</Button>
-  </Link>
-);
+const ButtonLink = ({ href, children }) => {
+
+  const location = useLocation();
+  const isActive = location.pathname === href;
+
+  console.log(location.pathname);
+
+  return (
+    <Link
+      to={href}
+      className="hidden sm:flex rounded-full hover:opacity-90 transition-all duration-300"
+    >
+      <Button variant={isActive ? "default" : "outline"}>{children}</Button>
+    </Link>
+  )
+};
 
 const NavLink = ({ href, className, children }) => (
   <Link
@@ -101,13 +109,13 @@ function Navbar() {
 
         <div className="flex sm:gap-6 order-3">
           <div className="flex gap-4 justify-evenly">
-            <ButtonLink href="/todo" variant="default">
+            <ButtonLink href="/todo">
               Todo
             </ButtonLink>
-            <ButtonLink href="/calendar" variant="outline">
+            <ButtonLink href="/calendar">
               Calendar
             </ButtonLink>
-            <ButtonLink href="/about" variant="outline">
+            <ButtonLink href="/about">
               About
             </ButtonLink>
           </div>
@@ -149,7 +157,7 @@ function Navbar() {
         }`}
         style={{
           transition: "height 0.3s ease-in-out, opacity 0.3s ease-in-out",
-          height: isMobileMenuOpen ? "12em" : "0",
+          height: isMobileMenuOpen ? "8em" : "0",
           opacity: isMobileMenuOpen ? 1 : 0,
           overflow: "hidden",
         }}
@@ -160,20 +168,6 @@ function Navbar() {
         <NavLink href="/todo" className="bg-gray-300 text-black rounded-full px-5 py-2">
           Todo List
         </NavLink>
-        <div className="flex w-full justify-between gap-2">
-          <NavLink
-            href="/#get-notified"
-            className="border border-gray-500 rounded-xl"
-          >
-            <p className="text-gray-500">How it Works</p>
-          </NavLink>
-          <NavLink
-            href="/#get-notified"
-            className="border border-gray-500 rounded-xl"
-          >
-            <p className="text-gray-500">Get Notified</p>
-          </NavLink>
-        </div>
       </div>
     </nav>
   );

@@ -11,6 +11,7 @@ const uuid = () => {
 
 const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
   const [form] = Form.useForm();
+  const [recur, setRecur] = useState(false)
 
   const showModal = () => {
     setOpen(true);
@@ -90,9 +91,19 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
           >
             <Input />
           </Form.Item>
-          <Form.Item name="date-picker" label="Date">
-            <DatePicker />
+          <Form.Item label="Recur?" name="disabled" valuePropName="checked">
+            <Checkbox 
+              checked={recur}
+              onChange={(e) => {setRecur(e.target.checked); console.log(recur)}}
+              className='w-full'></Checkbox>
           </Form.Item>
+
+          
+
+
+          {recur && (<Form.Item name="date-picker" label="Date">
+            <DatePicker />
+          </Form.Item>)}
           <Form.Item name="time-picker" label="Time">
             <TimePicker.RangePicker
               format="HH:mm A"
@@ -101,9 +112,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
               hideDisabledOptions
             />
           </Form.Item>
-          <Form.Item label="Recur?" name="disabled" valuePropName="checked">
-            
-          </Form.Item>
+          
           <Form.Item label="Recurring" name="disabled" valuePropName="checked">
             <Checkbox className='w-full'>Sunday</Checkbox>
             <Checkbox className='w-full'>Monday</Checkbox>

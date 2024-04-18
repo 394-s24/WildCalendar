@@ -95,13 +95,13 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     };
 
     const getMostRecentRange = () => {
-        //console.log(currEvent.extendedProps)
+        console.log(currEvent)
         if(calendarRef != null)
         {
             let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
             if(event1 != null)
             {
-                return [convertDateToStr(event1.start), convertDateToStr(event1.end)];
+                // return [convertDateToStr(event1.start), convertDateToStr(event1.end)];
             }
                 
         }

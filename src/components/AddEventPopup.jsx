@@ -1,23 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Form, DatePicker, Input, TimePicker } from "antd";
 import { Button } from "@/components/Button";
-import {
-  SettingOutlined,
-  FilterOutlined,
-  MenuOutlined,
-  PlusOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-
-const rangeConfig = {
-  rules: [
-    {
-      type: "array",
-      required: true,
-      message: "Please enter a time!",
-    },
-  ],
-};
+import { PlusOutlined } from "@ant-design/icons";
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 
@@ -62,12 +46,13 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
     };
     setOpen(false);
     console.log(calendarRef);
+    console.log('Vals obj here')
     console.log(values);
     calendarRef.current.getApi().addEvent(values);
   };
+
   return (
     <>
-
       {buttonType === 'scr_small' ? (
         <Button variant="outline" size="sm" onClick={showModal}>
           <PlusOutlined />
@@ -122,29 +107,5 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
     </>
   );
 };
+
 export default AddEventButtonPopup;
-
-
-
-// {title: 'ddd', start: '2024-04-18 04:30', end: '2024-04-18 19:55', description: 'tester', id: 'lv3cm76ge7rz4fsugcm', …}
-// NWUClass
-// : 
-// false
-// description
-// : 
-// "tester"
-// end
-// : 
-// "2024-04-18 19:55"
-// groupId
-// : 
-// ""
-// id
-// : 
-// "lv3cm76ge7rz4fsugcm"
-// start
-// : 
-// "2024-04-18 04:30"
-// title
-// : 
-// "ddd"

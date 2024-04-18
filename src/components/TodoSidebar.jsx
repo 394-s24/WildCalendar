@@ -71,13 +71,11 @@ const TodoSidebar = () => {
             </Button>
           </div>
         </div>
-        <div className="bg-gray-200 p-2 flex flex-col justify-center rounded-md text-sm font-medium w-full">
-          <p className="ms-1 mb-2 text-[16px]">Placeholder</p>
-        </div>
-        <div className="hover:bg-gray-100 transition-colors px-3 py-2 flex flex-row justify-start items-center rounded-md text-sm font-medium w-full">
+
+        <Button variant="secondary" className="w-full flex justify-start">
           <SettingOutlined />
-          <p className="ms-2 text-[16px]">Placeholder</p>
-        </div>
+          <p className="ms-2 text-[16px]">Settings</p>
+        </Button>
       </div>
     </nav>
   );

@@ -10,7 +10,7 @@ const TodoList = () => {
   const [events, setEvents] = useState([]);
   const [todos, setTodos] = useState({});
 
-    const addItem = (eventName, newItemDescription, newItemDate, newItemTime) =>
+    const addItem = (eventName, newItemDescription, newItemDate, newItemTime, ph = false) =>
     {
       console.log("AddItem")
       const newData = {
@@ -18,7 +18,10 @@ const TodoList = () => {
           date: newItemDate,
           time: newItemTime,
           completed: false,
+          ph: ph
       };
+
+      console.log(newData)
 
       const newTodoRef = push(ref(database, `todo/${eventName}`));
       const newTodoKey = newTodoRef.key;
@@ -40,12 +43,12 @@ const TodoList = () => {
       console.log("AddCat");
 
       const firstData = {
-        description: "Description",
-        date: "2024-04-01",
-        time: "10:00",
+        description: "",
+        date: "",
+        time: "",
       };
 
-      addItem(eventName, firstData.description, firstData.date, firstData.time);
+      addItem(eventName, firstData.description, firstData.date, firstData.time, true);
   };
 
   useEffect(() => {
@@ -104,7 +107,7 @@ const TodoList = () => {
               <ul className='flex flex-col gap-1'>
                 {todos[eventName] &&
                   Object.entries(todos[eventName]).map(([id, todo]) => (
-                    <TodoItem
+                    todo.ph ? <></> : <TodoItem
                       key={id}
                       id={id}
                       description={todo.description}
@@ -116,7 +119,9 @@ const TodoList = () => {
                     />
                   ))}
               </ul>
+              <Button onClick={() => {}}>Add</Button>
             </div>
+            
         ))}
         <div className='max-w-[35rem]'>
           <div className='flex flex-col gap-2 w-max mx-auto'>

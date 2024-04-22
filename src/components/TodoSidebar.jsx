@@ -8,7 +8,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 
-const TodoSidebar = () => {
+const TodoSidebar = ({onClickAddCat}) => {
 
   useEffect(() => {
     const handleResize = () => {
@@ -66,7 +66,10 @@ const TodoSidebar = () => {
             <Button variant="outline" size="tester" className="ml-1">
               <MenuOutlined />
             </Button>
-            <Button variant="outline" size="tester" className="ml-1">
+            <Button 
+              variant="outline" size="tester" className="ml-1"
+              onClick={onClickAddCat}
+            >
               <PlusOutlined />
             </Button>
           </div>

@@ -4,14 +4,23 @@ import { Button } from "@/components/Button";
 import { PlusOutlined } from "@ant-design/icons";
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
-
 const uuid = () => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
+const options = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
   const [form] = Form.useForm();
-  const [recur, setRecur] = useState(false)
+  const [recur, setRecur] = useState(false);
+  const [daysOfWeek, setDaysOfWeek] = useState([]);
 
   const showModal = () => {
     setOpen(true);
@@ -28,32 +37,57 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
 
   const handleOk = (fieldsValue) => {
     let newId = uuid();
-    let values = {
-      title: fieldsValue["title"],
-      start: fieldsValue["date-picker"]
-        .clone()
-        .hour(fieldsValue["time-picker"][0].hour())
-        .minute(fieldsValue["time-picker"][0].minute())
-        .format(dateTimeFormat),
-      end: fieldsValue["date-picker"]
-        .clone()
-        .hour(fieldsValue["time-picker"][1].hour())
-        .minute(fieldsValue["time-picker"][1].minute())
-        .format(dateTimeFormat),
-      description: fieldsValue["description"] ? fieldsValue["description"] : "",
-      id: newId,
-      groupId: "",
-      NWUClass: false,
-    };
+    let values = {};
+    if (recur) {
+      values = {
+        title: fieldsValue["title"],
+        startTime: fieldsValue["start-recurrence"]
+          .clone()
+          .hour(fieldsValue["time-picker"][0].hour())
+          .minute(fieldsValue["time-picker"][0].minute())
+          .format("HH:mm"),
+        endTime: fieldsValue["end-recurrence"]
+          .clone()
+          .hour(fieldsValue["time-picker"][1].hour())
+          .minute(fieldsValue["time-picker"][1].minute())
+          .format("HH:mm"),
+        description: fieldsValue["description"]
+          ? fieldsValue["description"]
+          : "",
+        startRecur: fieldsValue["start-recurrence"].format("YYYY-MM-DD"),
+        endRecur: fieldsValue["end-recurrence"].format("YYYY-MM-DD"),
+        daysOfWeek: daysOfWeek,
+        id: newId,
+        groupId: "",
+        NWUClass: false,
+      };
+    } else {
+      values = {
+        title: fieldsValue["title"],
+        start: fieldsValue["date-picker"]
+          .clone()
+          .hour(fieldsValue["time-picker"][0].hour())
+          .minute(fieldsValue["time-picker"][0].minute())
+          .format(dateTimeFormat),
+        end: fieldsValue["date-picker"]
+          .clone()
+          .hour(fieldsValue["time-picker"][1].hour())
+          .minute(fieldsValue["time-picker"][1].minute())
+          .format(dateTimeFormat),
+        description: fieldsValue["description"]
+          ? fieldsValue["description"]
+          : "",
+        id: newId,
+        groupId: "",
+        NWUClass: false,
+      };
+    }
     setOpen(false);
     console.log(calendarRef);
     console.log("Vals obj here");
     console.log(values);
     calendarRef.current.getApi().addEvent(values);
   };
-
-  
-
 
   return (
     <>
@@ -66,6 +100,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
           Add Event
         </Button>
       )}
+
       <Modal
         title="Create an Event"
         open={open}
@@ -94,62 +129,78 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Recur?" name="disabled" valuePropName="checked">
-            <Checkbox 
+
+          <Form.Item name="isRecurring">
+            <Checkbox
               checked={recur}
-              onChange={(e) => {setRecur(e.target.checked); console.log(recur)}}
-              className='w-full'></Checkbox>
+              onChange={(e) => {
+                setRecur(e.target.checked);
+              }}
+              className=""
+            >
+              Recurring?
+            </Checkbox>
           </Form.Item>
 
-          {!recur && (<Form.Item name="date-picker" label="Date">
-            <DatePicker />
-          </Form.Item>)}
+          {!recur && (
+            <Form.Item name="date-picker" label="Date">
+              <DatePicker />
+            </Form.Item>
+          )}
 
           {!recur && (
-          <Form.Item name="time-picker" label="Time">
-            <TimePicker.RangePicker
-              format="HH:mm A"
-              minuteStep={5}
-              hourStep={1}
-              hideDisabledOptions
-            />
-          </Form.Item>)}
-
-
-          {recur && 
-
-          (<Form.Item name="date-picker" label="Start Date">
-            <DatePicker />
-          </Form.Item>)
-  
-          }
-
-          {recur && 
-              (<Form.Item name="date-picker" label="End Date">
-               <DatePicker />
-              </Form.Item>)}
+            <Form.Item name="time-picker" label="Time">
+              <TimePicker.RangePicker
+                format="HH:mm A"
+                minuteStep={5}
+                hourStep={1}
+                hideDisabledOptions
+              />
+            </Form.Item>
+          )}
 
           {recur && (
-          <Form.Item name="time-picker" label="Time">
-            <TimePicker.RangePicker
-              format="HH:mm A"
-              minuteStep={5}
-              hourStep={1}
-              hideDisabledOptions
-            />
-          </Form.Item>)}
+            <Form.Item name="start-recurrence" label="Start Date">
+              <DatePicker />
+            </Form.Item>
+          )}
 
+          {recur && (
+            <Form.Item name="end-recurrence" label="End Date">
+              <DatePicker />
+            </Form.Item>
+          )}
 
-          
-          {recur && (<Form.Item label="Recurring" name="disabled" valuePropName="checked">
-            <Checkbox className='w-full'>Sunday</Checkbox>
-            <Checkbox className='w-full'>Monday</Checkbox>
-            <Checkbox className='w-full'>Tuesday</Checkbox>
-            <Checkbox className='w-full'>Wednesday</Checkbox>
-            <Checkbox className='w-full'>Thursday</Checkbox>
-            <Checkbox className='w-full'>Friday</Checkbox>
-            <Checkbox className='w-full'>Saturday</Checkbox>
-          </Form.Item>) }
+          {recur && (
+            <Form.Item name="time-picker" label="Time">
+              <TimePicker.RangePicker
+                format="HH:mm A"
+                minuteStep={5}
+                hourStep={1}
+                hideDisabledOptions
+              />
+            </Form.Item>
+          )}
+
+          {recur && (
+            <Form.Item label="On Days:" name="daysOfWeek">
+              <Checkbox.Group
+                style={{ width: "100%" }}
+                onChange={(checkedValues) => {
+                  const daysOfWeek = checkedValues.map((day) =>
+                    options.indexOf(day)
+                  );
+                  setDaysOfWeek(daysOfWeek);
+                }}
+              >
+                {options.map((option) => (
+                  <Checkbox value={option} className="w-full">
+                    {option}
+                  </Checkbox>
+                ))}
+              </Checkbox.Group>
+            </Form.Item>
+          )}
 
           <Form.Item label="Description" name="description">
             <Input />

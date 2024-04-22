@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { Modal, Form, DatePicker, Input, TimePicker, Checkbox } from "antd";
 import { Button } from "@/components/Button";
 import { PlusOutlined } from "@ant-design/icons";
+import { v4 as uuidv4 } from 'uuid';
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
-const uuid = () => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-};
-const options = [
+const weekdays = [
   "Sunday",
   "Monday",
   "Tuesday",
@@ -36,7 +34,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
   };
 
   const handleOk = (fieldsValue) => {
-    let newId = uuid();
+    let newId = uuidv4();
     let values = {};
     if (recur) {
       values = {
@@ -83,9 +81,6 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
       };
     }
     setOpen(false);
-    console.log(calendarRef);
-    console.log("Vals obj here");
-    console.log(values);
     calendarRef.current.getApi().addEvent(values);
   };
 
@@ -193,9 +188,9 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
                   setDaysOfWeek(daysOfWeek);
                 }}
               >
-                {options.map((option) => (
-                  <Checkbox value={option} className="w-full">
-                    {option}
+                {weekdays.map((weekday) => (
+                  <Checkbox value={weekday} className="w-full">
+                    {weekday}
                   </Checkbox>
                 ))}
               </Checkbox.Group>

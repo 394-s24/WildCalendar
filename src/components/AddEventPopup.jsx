@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, DatePicker, Input, TimePicker, Checkbox } from "antd";
 import { Button } from "@/components/Button";
 import { PlusOutlined } from "@ant-design/icons";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 const weekdays = [
@@ -88,10 +88,10 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
     <>
       {buttonType === "scr_small" ? (
         <Button variant="outline" size="sm" onClick={showModal}>
-          <PlusOutlined />
+          Add Event
         </Button>
-      ) : (
-        <Button type="primary" onClick={showModal}>
+      ) : buttonType === "" ? null : (
+        <Button variant="outline" onClick={showModal}>
           Add Event
         </Button>
       )}

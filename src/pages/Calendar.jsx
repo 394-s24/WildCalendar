@@ -10,6 +10,8 @@ import { ref, update, push, remove, onValue } from "@firebase/database";
 import { message } from "antd";
 import Sidebar from "../components/Sidebar";
 import { cs_classes_list } from "@/lib/courseData";
+import AddEventButtonPopup from "../components/AddEventPopup";
+
 
 let clickedEvent = {
   id: "randomlyInitializedEvent",
@@ -27,6 +29,8 @@ const CalendarPage = () => {
   const [showClickEventPopup, setShowClickEventPopup] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [clickedCell, setClickedCell] = useState(null);
+  const [showAddEventButtonPopup, setShowAddEventButtonPopup] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -83,6 +87,12 @@ const CalendarPage = () => {
       console.log(clickedEvent);
     });
   };
+
+  const dateClick = (info) => {
+    setClickedCell(info.dateStr);
+    console.log(info);
+    setShowAddEventButtonPopup(true);
+  }
 
   const changeClickedEvent = (aEvent) => {
     clickedEvent = aEvent;
@@ -196,12 +206,20 @@ const CalendarPage = () => {
               eventRemove={onEventRemove}
               eventAdd={onEventAdd}
               eventColor="#20025a"
+              dateClick={dateClick}
+              
             />
             <ClickEventPopup
               open={showClickEventPopup}
               setOpen={setShowClickEventPopup}
               currEvent={clickedEvent}
               calendarRef={calendarRef}
+            />
+            <AddEventButtonPopup
+              open={showAddEventButtonPopup}
+              setOpen={setShowAddEventButtonPopup}
+              calendarRef={calendarRef}
+              buttonType="scr_small"
             />
           </div>
         </div>

@@ -18,8 +18,6 @@ const ButtonLink = ({ href, children }) => {
   const location = useLocation();
   const isActive = location.pathname === href;
 
-  console.log(location.pathname);
-
   return (
     <Link
       to={href}

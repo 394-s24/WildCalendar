@@ -114,44 +114,75 @@ const TodoList = () => {
   return (
     <div className="mx-auto flex">
       <div className="fixed h-screen">
-        <TodoSidebar onClickAddCat={handleCreateCatModelOpen}/>
+        <TodoSidebar/>
       </div>
       <div className="pt-24 px-2 sm:px-4 sm:ps-20 lg:ps-64 flex-grow w-screen mx-auto">
         <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold p-4">My Todo List</h1>
-        {events.map((eventName) => (
-            <div key={eventName}>
+
+        {events.map((eventName, index) => (
+            <div key={eventName} className='min-w-[35rem] w-1/2'>
+
+              {index === 0 &&
+                <>
+                  {/* Add Section button */}
+                  <div onClick={handleCreateCatModelOpen} className={`w-full opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
+                    <div className='flex flex-row gap-2 items-center justify-between cursor-pointer'>
+                      <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                      <p className='font-bold text-red-500'>Add Section</p>
+                      <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                    </div>
+                  </div>
+                </>
+              }
+
               <h3 className='pl-6 text-lg font-bold'>{eventName}</h3>
               <ul className='flex flex-col gap-1'>
                 {
-                  <div> 
+                  <div>
                     <div>todos[eventName]</div>
                   </div>
                    &&
                   Object.entries(todos[eventName]).map(([id, todo]) => (
-                    todo.ph ? <></> : <TodoItem
-                      key={id}
-                      id={id}
-                      description={todo.description}
-                      date={todo.date}
-                      time={todo.time}
-                      completed={todo.completed}
-                      eventName={eventName}
-                      addNewItem={addItem} // so we can access eventname when adding an item
-                    />
+                    todo.ph ? <></> :
+                    <div>
+                      <TodoItem
+                        key={id}
+                        id={id}
+                        description={todo.description}
+                        date={todo.date}
+                        time={todo.time}
+                        completed={todo.completed}
+                        eventName={eventName}
+                        addNewItem={addItem} // so we can access eventname when adding an item
+                      />
+
+                    </div>
                   ))}
+
               </ul>
+
+              {/* Add todo item button */}
               <Button onClick={() => {}}>Add</Button>
+
+              {/* Add Section button */}
+              <div onClick={handleCreateCatModelOpen} className={`w-full mt-5 opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
+                <div className='flex flex-row gap-2 items-center justify-between cursor-pointer'>
+                  <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                  <p className='font-bold text-red-500'>Add Section</p>
+                  <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                </div>
+              </div>
             </div>
-            
+
         ))}
-        
+
         </div>
       </div>
       <div>
-        <Modal 
+        <Modal
           //title={"Create a Category:"}
-          open={isCreateCatModalOpen} 
+          open={isCreateCatModalOpen}
           onOk={handleCreateCatModelOK}
           onCancel={handleCreateCatModelCancel}
           destroyOnClose={true}

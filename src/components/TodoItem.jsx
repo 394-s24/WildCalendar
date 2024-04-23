@@ -44,7 +44,7 @@ export default function TodoItem({ id, date, time, description, eventName, compl
   ];
 
   return (
-    <div className="border rounded-xl p-4 mb-4 flex flex-row min-w-[35rem] w-1/2 justify-between">
+    <div className="border rounded-xl p-4 mb-4 flex flex-row justify-between">
 
       <div className='flex items-start gap-2'>
         <input type="checkbox" className="cursor-pointer w-5 h-5" checked={isCompleted} onChange={toggleCompleted} />

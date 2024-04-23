@@ -128,9 +128,9 @@ const TodoList = () => {
                   {/* Add Section button */}
                   <div onClick={handleCreateCatModelOpen} className={`w-full opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
                     <div className='flex flex-row gap-2 items-center justify-between cursor-pointer'>
-                      <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                      <div className='bg-red-500 h-[1px] flex-grow'></div>
                       <p className='font-bold text-red-500'>Add Section</p>
-                      <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                      <div className='bg-red-500 h-[1px] flex-grow'></div>
                     </div>
                   </div>
                 </>
@@ -168,9 +168,9 @@ const TodoList = () => {
               {/* Add Section button */}
               <div onClick={handleCreateCatModelOpen} className={`w-full mt-5 opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
                 <div className='flex flex-row gap-2 items-center justify-between cursor-pointer'>
-                  <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                  <div className='bg-red-500 h-[1px] flex-grow'></div>
                   <p className='font-bold text-red-500'>Add Section</p>
-                  <div className='bg-red-500 h-[1px] w-[40%]'></div>
+                  <div className='bg-red-500 h-[1px] flex-grow'></div>
                 </div>
               </div>
             </div>

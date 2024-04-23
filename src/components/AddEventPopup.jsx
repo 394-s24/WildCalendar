@@ -3,6 +3,7 @@ import { Modal, Form, DatePicker, Input, TimePicker, Checkbox } from "antd";
 import { Button } from "@/components/Button";
 import { PlusOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
+import moment from 'moment'
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 const weekdays = [
@@ -111,8 +112,12 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
           form={form}
           name="time_related_controls"
           onFinish={handleOk}
+          // initialValues={{
+          //   // 'date-picker': clickedDateTime ? clickedDateTime : undefined,
+          //   'date-picker': clickedDateTime ? clickedDateTime : undefined,
+          // }}
           initialValues={{
-            'date-picker': clickedDateTime ? clickedDateTime : undefined,
+            'date-picker': clickedDateTime ? moment(clickedDateTime) : moment()
           }}
         >
           <Form.Item

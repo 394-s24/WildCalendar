@@ -3,7 +3,7 @@ import { ref, update, push, remove } from '@firebase/database';
 import { database } from '../firebase';
 import { Dropdown, Space, Button } from 'antd';
 
-export default function TodoItem({ id, date, time, description, eventName, completed /*, addItem */ }) {
+export default function TodoItem({ id, date, time, description, eventName, completed, startEditing, setStartEditing }) {
   const [isCompleted, setCompleted] = useState(completed);
   const [editing, setEditing] = useState(false);
   const [editedText, setEditedText] = useState(description);
@@ -12,6 +12,12 @@ export default function TodoItem({ id, date, time, description, eventName, compl
   const [newDescription, setNewDescription] = useState('');
   const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
+
+  useEffect (
+    () => {
+      startEditing === id ? setEditing(true) : <></>
+    }, [startEditing]
+  )
 
   const toggleCompleted = () => {
     const updatedCompleted = !isCompleted;
@@ -27,6 +33,7 @@ export default function TodoItem({ id, date, time, description, eventName, compl
   const updateItem = () => {
     update(ref(database, `todo/${eventName}/${id}`), { description: editedText, date: editedDate, time: editedTime });
     setEditing(!editing);
+    setStartEditing("");
   }
 
   const items = [

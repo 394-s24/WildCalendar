@@ -10,6 +10,7 @@ const TodoList = () => {
   const [events, setEvents] = useState([]);
   const [todos, setTodos] = useState({});
   const [isCreateCatModalOpen, setIsCreateCatModalOpen] = useState(false);
+  const [currTodokey, setCurrTodokey] = useState("");
 
     const addItem = (eventName, newItemDescription, newItemDate, newItemTime, ph = false) =>
     {
@@ -31,10 +32,11 @@ const TodoList = () => {
 
       updates[`/todo/${eventName}/${newTodoKey}`] = newData;
 
-      return update(ref(database), updates)
+      update(ref(database), updates)
           .catch((error) => {
               console.error("Error adding new item: ", error);
           });
+      return newTodoKey;
   };
 
   const [editedText, setEditedText] = useState("");
@@ -122,7 +124,6 @@ const TodoList = () => {
 
         {events.map((eventName, index) => (
             <div key={eventName} className='min-w-[35rem] w-1/2'>
-
               {index === 0 &&
                 <>
                   {/* Add Section button */}
@@ -155,6 +156,8 @@ const TodoList = () => {
                         completed={todo.completed}
                         eventName={eventName}
                         addNewItem={addItem} // so we can access eventname when adding an item
+                        startEditing={currTodokey}
+                        setStartEditing={setCurrTodokey}
                       />
 
                     </div>
@@ -163,7 +166,13 @@ const TodoList = () => {
               </ul>
 
               {/* Add todo item button */}
-              <Button onClick={() => {}}>Add</Button>
+              <Button 
+                onClick={() => {
+                    let newTodoKey = addItem(eventName, "To-do Item", "", ""); 
+                    setCurrTodokey(newTodoKey); 
+                    
+                  }}
+              >Add</Button>
 
               {/* Add Section button */}
               <div onClick={handleCreateCatModelOpen} className={`w-full mt-5 opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
@@ -192,7 +201,7 @@ const TodoList = () => {
             <div className='flex flex-col gap-2 w-max mx-auto'>
               <p>Category Name:</p>
               <input type="category text" className='border rounded-sm ' value={editedText} onChange={(e) => setEditedText(e.target.value)} />
-              <Button onClick={() => {addCategory(editedText); setIsCreateCatModalOpen(false);}}>Add Category</Button>
+              <Button onClick={() => {addCategory(editedText); setIsCreateCatModalOpen(newTodoKey);}}>Add Category</Button>
             </div>
           </div>
         </Modal>

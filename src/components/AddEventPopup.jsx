@@ -15,7 +15,7 @@ const weekdays = [
   "Saturday",
 ];
 
-const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
+const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDateTime }) => {
   const [form] = Form.useForm();
   const [recur, setRecur] = useState(false);
   const [daysOfWeek, setDaysOfWeek] = useState([]);
@@ -111,6 +111,9 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
           form={form}
           name="time_related_controls"
           onFinish={handleOk}
+          initialValues={{
+            'date-picker': clickedDateTime ? clickedDateTime : undefined,
+          }}
         >
           <Form.Item
             label="Title"

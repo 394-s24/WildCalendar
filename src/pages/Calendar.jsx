@@ -220,6 +220,7 @@ const CalendarPage = () => {
               setOpen={setShowAddEventButtonPopup}
               calendarRef={calendarRef}
               buttonType="scr_small"
+              clickedDateTime={clickedCell}
             />
           </div>
         </div>

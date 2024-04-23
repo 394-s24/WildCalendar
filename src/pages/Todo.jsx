@@ -5,10 +5,37 @@ import {ref, onValue, push, update} from '@firebase/database';
 import { Button } from 'antd';
 import TodoSidebar from "../components/TodoSidebar";
 
+
+const testToken = "[no]"
+
 const TodoList = () => {
 
   const [events, setEvents] = useState([]);
   const [todos, setTodos] = useState({});
+
+  // useEffect(() => {
+  //   fetch(`https://canvas.instructure.com/api/v1/courses?access_token=${testToken}`)
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(data => {
+  //       // Save courses to Firebase
+  //       const updates = {};
+  //       data.forEach(course => {
+  //         const courseId = course.id;
+  //         updates[`/courses/${courseId}`] = course;
+  //       });
+  //       update(ref(database), updates);
+  //       setEvents(data.map(course => course.id));
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error);
+  //     });
+  // }, []);
+
 
     const addItem = (eventName, newItemDescription, newItemDate, newItemTime) =>
     {

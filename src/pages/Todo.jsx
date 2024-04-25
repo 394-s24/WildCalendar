@@ -5,6 +5,18 @@ import {ref, onValue, push, update} from '@firebase/database';
 import { Button, Modal } from 'antd';
 import TodoSidebar from "../components/TodoSidebar";
 
+const AddSectionBtn = ({ onClick, isCreateCatModalOpen }) => {
+  return (
+    <div onClick={onClick} className={`max-w-[300px] sm:max-w-full opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
+      <div className='flex flex-row gap-2 items-center justify-between cursor-pointer'>
+        <div className='bg-red-500 h-[1px] flex-grow'></div>
+        <p className='font-bold text-red-500'>Add Section</p>
+        <div className='bg-red-500 h-[1px] flex-grow'></div>
+      </div>
+    </div>
+  )
+}
+
 const TodoList = () => {
 
   const [events, setEvents] = useState([]);
@@ -118,23 +130,17 @@ const TodoList = () => {
       <div className="fixed h-screen">
         <TodoSidebar/>
       </div>
-      <div className="pt-24 px-2 sm:px-4 sm:ps-20 lg:ps-64 flex-grow w-screen mx-auto">
+      <div className="mt-8 sm:mt-0 pt-24 px-2 sm:ps-20 lg:px-64 w-max mx-auto max-w-[90vw]">
         <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold p-4">My Todo List</h1>
 
         {events.map((eventName, index) => (
             <div key={eventName} className='min-w-[35rem] w-1/2'>
               {index === 0 &&
-                <>
-                  {/* Add Section button */}
-                  <div onClick={handleCreateCatModelOpen} className={`w-full opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
-                    <div className='flex flex-row gap-2 items-center justify-between cursor-pointer'>
-                      <div className='bg-red-500 h-[1px] flex-grow'></div>
-                      <p className='font-bold text-red-500'>Add Section</p>
-                      <div className='bg-red-500 h-[1px] flex-grow'></div>
-                    </div>
-                  </div>
-                </>
+                <AddSectionBtn
+                  onClick={handleCreateCatModelOpen}
+                  isCreateCatModalOpen={isCreateCatModalOpen}
+                />
               }
 
               <h3 className='pl-6 text-lg font-bold'>{eventName}</h3>
@@ -146,7 +152,7 @@ const TodoList = () => {
                    &&
                   Object.entries(todos[eventName]).map(([id, todo]) => (
                     todo.ph ? <></> :
-                    <div>
+                    <div className='max-w-[85vw]'>
                       <TodoItem
                         key={id}
                         id={id}
@@ -166,29 +172,26 @@ const TodoList = () => {
               </ul>
 
               {/* Add todo item button */}
-              <Button 
+              <Button
                 onClick={() => {
-                    let newTodoKey = addItem(eventName, "To-do Item", "", ""); 
-                    setCurrTodokey(newTodoKey); 
-                    
+                    let newTodoKey = addItem(eventName, "To-do Item", "", "");
+                    setCurrTodokey(newTodoKey);
+
                   }}
               >Add</Button>
 
               {/* Add Section button */}
-              <div onClick={handleCreateCatModelOpen} className={`w-full mt-5 opacity-0 hover:opacity-100 ${isCreateCatModalOpen && "opacity-100"} transition duration-300`}>
-                <div className='flex flex-row gap-2 items-center justify-between cursor-pointer'>
-                  <div className='bg-red-500 h-[1px] flex-grow'></div>
-                  <p className='font-bold text-red-500'>Add Section</p>
-                  <div className='bg-red-500 h-[1px] flex-grow'></div>
-                </div>
-              </div>
+              <AddSectionBtn
+                onClick={handleCreateCatModelOpen}
+                isCreateCatModalOpen={isCreateCatModalOpen}
+              />
             </div>
 
         ))}
 
         </div>
       </div>
-      <div>
+      <div className='max-w-[35rem]'>
         <Modal
           //title={"Create a Category:"}
           open={isCreateCatModalOpen}
@@ -197,7 +200,7 @@ const TodoList = () => {
           destroyOnClose={true}
           afterClose={handleCloseCompletely}
         >
-          <div className='max-w-[35rem]'>
+          <div>
             <div className='flex flex-col gap-2 w-max mx-auto'>
               <p>Category Name:</p>
               <input type="category text" className='border rounded-sm ' value={editedText} onChange={(e) => setEditedText(e.target.value)} />

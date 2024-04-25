@@ -26,12 +26,12 @@ const TodoSidebar = () => {
     <nav
       role="navigation"
       className={
-        "bg-slate-50 z-20 border-r border-slate-100 shadow-sm absolute left-0 top-15 h-screen py-[4.5em] duration-300 ease-in-out md:fixed md:translate-x-0"
+        "sm:bg-slate-50 z-[99] border-r  shadow-sm absolute left-0 top-15 h-screen py-[4.5em] duration-300 ease-in-out md:fixed md:translate-x-0"
       }
     >
       {/* small */}
       <div
-        className={`text-slate-500  sm:hidden relative flex flex-row justify-center items-center gap-6 h-12 w-screen sm:w-60 sm:h-screen overflow-hidden bg-gray-200`}
+        className={`text-slate-500 z-[99] sm:hidden relative flex flex-row justify-center items-center gap-6 h-12 w-screen sm:w-60 sm:h-screen overflow-hidden bg-gray-200`}
       >
         <Button
           variant="outline"

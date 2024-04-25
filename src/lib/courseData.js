@@ -8,6 +8,7 @@ export const cs_classes_list = [
     daysOfWeek: [1, 3, 5],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "100",
     editable: false,
     NWUClass: true,
     description: "Sample Description."
@@ -21,6 +22,7 @@ export const cs_classes_list = [
     daysOfWeek: [1, 3, 5],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "101",
     editable: false,
     NWUClass: true,
     description: "Sample Description."
@@ -29,11 +31,12 @@ export const cs_classes_list = [
     id: '102',
     title: 'COMP_SCI 111-0 Fundamentals of Computer Programming',
     subject: 'COMP_SCI',
-    startTime: '16:30',
-    endTime: '18:00',
+    startTime: '16:30:00',
+    endTime: '18:00:00',
     daysOfWeek: [1, 3, 5],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "102",
     editable: false,
     NWUClass: true,
     description: "Sample Description."
@@ -47,6 +50,7 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "103",
     editable: false,
     NWUClass: true,
     description: "Sample Description."
@@ -60,6 +64,7 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "104",
     editable: false,
     NWUClass: true,
     description: "Sample Description."
@@ -73,6 +78,7 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "105",
     editable: false,
     NWUClass: true,
     description: "Sample Description."
@@ -86,6 +92,7 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "106",
     editable: false,
     NWUClass: true,
     description: "Sample Description."

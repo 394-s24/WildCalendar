@@ -3,7 +3,7 @@ import { ref, update, push, remove } from '@firebase/database';
 import { database } from '../firebase';
 import { Dropdown, Space, Button } from 'antd';
 
-export default function TodoItem({ id, date, time, description, eventName, completed /*, addItem */ }) {
+export default function TodoItem({ id, date, time, description, eventName, completed, startEditing, setStartEditing }) {
   const [isCompleted, setCompleted] = useState(completed);
   const [editing, setEditing] = useState(false);
   const [editedText, setEditedText] = useState(description);
@@ -12,6 +12,12 @@ export default function TodoItem({ id, date, time, description, eventName, compl
   const [newDescription, setNewDescription] = useState('');
   const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
+
+  useEffect (
+    () => {
+      startEditing === id ? setEditing(true) : <></>
+    }, [startEditing]
+  )
 
   const toggleCompleted = () => {
     const updatedCompleted = !isCompleted;
@@ -27,6 +33,7 @@ export default function TodoItem({ id, date, time, description, eventName, compl
   const updateItem = () => {
     update(ref(database, `todo/${eventName}/${id}`), { description: editedText, date: editedDate, time: editedTime });
     setEditing(!editing);
+    setStartEditing("");
   }
 
   const items = [
@@ -44,10 +51,10 @@ export default function TodoItem({ id, date, time, description, eventName, compl
   ];
 
   return (
-    <div className="flex flex-row min-w-[35rem] w-1/2 justify-between">
+    <div className="border rounded-xl p-4 mb-4 flex flex-row justify-between">
 
-      <div className='flex items-center gap-2'>
-        <input type="checkbox" className="w-5 h-5" checked={isCompleted} onChange={toggleCompleted} />
+      <div className='flex items-start gap-2'>
+        <input type="checkbox" className="cursor-pointer w-5 h-5" checked={isCompleted} onChange={toggleCompleted} />
 
         {editing ? (
           <>
@@ -56,9 +63,15 @@ export default function TodoItem({ id, date, time, description, eventName, compl
             <input type="time" value={editedTime} onChange={(e) => setEditedTime(e.target.value)} />
           </>
         ) : (
-          <label style={{ textDecoration: isCompleted ? 'line-through' : 'none' }}>
-            {editedText} - {editedDate} - {editedTime}
-          </label>
+          // <label style={{ textDecoration: isCompleted ? 'line-through' : 'none' }}>
+          //   {editedText} - {editedDate} - {editedTime}
+          // </label>
+
+          <div className='flex flex-col gap-1'>
+            <p>{editedText}</p>
+            <p className='text-gray-500'>{editedDate}</p>
+            <p className='text-gray-500'>{editedTime}</p>
+          </div>
         )}
       </div>
 
@@ -73,7 +86,7 @@ export default function TodoItem({ id, date, time, description, eventName, compl
           }}
           trigger={['click']}
         >
-          <a onClick={(e) => e.preventDefault()} style={{ cursor: 'pointer' }}>
+          <a onClick={(e) => e.preventDefault()} className='cursor-pointer h-max'>
             <Space>
               <Button>
                 ⋯

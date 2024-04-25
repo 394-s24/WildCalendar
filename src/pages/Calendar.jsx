@@ -89,8 +89,10 @@ const CalendarPage = () => {
   };
 
   const dateClick = (info) => {
+    console.log("Date clicked: ", info.dateStr);
     setClickedCell(info.dateStr);
     console.log(info);
+    console.log("State should now contain the clicked date:", clickedCell);
     setShowAddEventButtonPopup(true);
   }
 
@@ -199,7 +201,7 @@ const CalendarPage = () => {
               editable
               expandRows
               aspectRatio={0.8}
-              timeZone="UTC"
+              timeZone="CST"
               events={eventsInCalendar}
               eventClick={onEventClickCustom}
               eventChange={onEventChange}

@@ -56,8 +56,8 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
         startRecur: fieldsValue["start-recurrence"].format("YYYY-MM-DD"),
         endRecur: fieldsValue["end-recurrence"].format("YYYY-MM-DD"),
         daysOfWeek: daysOfWeek,
-        id: newId,
-        groupId: "",
+        //id: newId,
+        groupId: newId,
         NWUClass: false,
       };
     } else {
@@ -81,6 +81,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
         NWUClass: false,
       };
     }
+    //console.log(values)
     setOpen(false);
     calendarRef.current.getApi().addEvent(values);
   };
@@ -191,7 +192,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
                 style={{ width: "100%" }}
                 onChange={(checkedValues) => {
                   const daysOfWeek = checkedValues.map((day) =>
-                    options.indexOf(day)
+                    weekdays.indexOf(day)
                   );
                   setDaysOfWeek(daysOfWeek);
                 }}

@@ -122,8 +122,8 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
             if(event1 != null)
             {
                 // console.log(currEvent.start)
-                const startTime = formatTimeToAMPM(new Date(currEvent.start));
-                const endTime = formatTimeToAMPM(new Date(currEvent.end));
+                const startTime = formatTimeToAMPM(new Date(event1.start));
+                const endTime = formatTimeToAMPM(new Date(event1.end));
                 return [startTime, endTime];
             }
 
@@ -205,7 +205,13 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
 
             ) : (
                 <>
-                    {currEvent.groupId !== '' ? <></> : (
+                    {currEvent.groupId !== '' ? <>
+                        <div>
+                            Start: {/*currEvent.startRecur*/}
+                            <Divider type="vertical" />
+                            End: {/*currEvent.endRecur*/}
+                        </div>
+                    </> : (
                         <div>
                             Start: {getMostRecentRange()[0]}
                             <Divider type="vertical" />

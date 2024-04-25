@@ -100,19 +100,20 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
         setRangePickerStatus("");
     };
 
-    const formatTimeToAMPM = (date) => {
-        if (!(date instanceof Date)) {
-            console.error("Invalid date input");
-            return '';
-        }
-        let hours = date.getHours();
-        const minutes = date.getMinutes();
+    const formatTimeToAMPM = (dateString) => {
+        const utcDate = new Date(dateString);
+    
+        const localDate = new Date(utcDate.getTime() + (utcDate.getTimezoneOffset() * 60000));
+    
+        let hours = localDate.getHours(); // get local hours
+        const minutes = localDate.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
         hours = hours ? hours : 12; // the hour '0' should be '12'
         const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+    
         return `${hours}:${minutesStr} ${ampm}`;
-    };    
+    };  
 
     const getMostRecentRange = () => {
         console.log(currEvent)
@@ -207,9 +208,9 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 <>
                     {currEvent.groupId !== '' ? <>
                         <div>
-                            Start: {/*currEvent.startRecur*/}
+                            Start: {currEvent.startRecur}
                             <Divider type="vertical" />
-                            End: {/*currEvent.endRecur*/}
+                            End: {currEvent.endRecur}
                         </div>
                     </> : (
                         <div>

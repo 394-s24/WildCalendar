@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import moment from 'moment'
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
+
 const weekdays = [
   "Sunday",
   "Monday",
@@ -15,6 +16,18 @@ const weekdays = [
   "Friday",
   "Saturday",
 ];
+
+const { RangePicker } = DatePicker;
+
+const rangeConfig = {
+    rules: [
+        {
+            type: 'array',
+            required: true,
+            message: 'Please enter a time!',
+        },
+    ],
+}
 
 const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDateTime }) => {
   const [form] = Form.useForm();
@@ -33,6 +46,11 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
   const onClosingCompletely = () => {
     form.resetFields();
   };
+
+  const onModalOpenChange = () => {
+    form.resetFields();
+    //console.log(clickedDateTime, open);
+  }
 
   const handleOk = (fieldsValue) => {
     let newId = uuidv4();
@@ -57,21 +75,23 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
         endRecur: fieldsValue["end-recurrence"].format("YYYY-MM-DD"),
         daysOfWeek: daysOfWeek,
         //id: newId,
+        editable: false,
         groupId: newId,
         NWUClass: false,
+        recurEvent: true,
       };
     } else {
       values = {
         title: fieldsValue["title"],
-        start: fieldsValue["date-picker"]
-          .clone()
-          .hour(fieldsValue["time-picker"][0].hour())
-          .minute(fieldsValue["time-picker"][0].minute())
+        start: fieldsValue["range-picker1"][0]
+          // .clone()
+          // .hour(fieldsValue["time-picker"][0].hour())
+          // .minute(fieldsValue["time-picker"][0].minute())
           .format(dateTimeFormat),
-        end: fieldsValue["date-picker"]
-          .clone()
-          .hour(fieldsValue["time-picker"][1].hour())
-          .minute(fieldsValue["time-picker"][1].minute())
+        end: fieldsValue["range-picker1"][1]
+          // .clone()
+          // .hour(fieldsValue["time-picker"][1].hour())
+          // .minute(fieldsValue["time-picker"][1].minute())
           .format(dateTimeFormat),
         description: fieldsValue["description"]
           ? fieldsValue["description"]
@@ -79,6 +99,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
         id: newId,
         groupId: "",
         NWUClass: false,
+        recurEvent: false,
       };
     }
     //console.log(values)
@@ -105,7 +126,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
           form.validateFields().then(form.submit);
         }}
         onCancel={handleCancel}
-        //afterOpenChange={onModalOpenChange}
+        afterOpenChange={onModalOpenChange}
         afterClose={onClosingCompletely}
       >
         <Form
@@ -147,12 +168,13 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
           </Form.Item>
 
           {!recur && (
-            <Form.Item name="date-picker" label="Date">
-              <DatePicker />
+            <Form.Item name="range-picker1" label="Start and End">
+                <RangePicker {...rangeConfig} showTime format="YYYY-MM-DD HH:mm"
+                    />
             </Form.Item>
           )}
 
-          {!recur && (
+          {/* {!recur && (
             <Form.Item name="time-picker" label="Time">
               <TimePicker.RangePicker
                 format="HH:mm A"
@@ -161,7 +183,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
                 hideDisabledOptions
               />
             </Form.Item>
-          )}
+          )} */}
 
           {recur && (
             <Form.Item name="start-recurrence" label="Start Date">

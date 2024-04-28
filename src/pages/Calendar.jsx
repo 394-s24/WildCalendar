@@ -11,7 +11,7 @@ import { message } from "antd";
 import Sidebar from "../components/Sidebar";
 import { cs_classes_list } from "@/lib/courseData";
 import AddEventButtonPopup from "../components/AddEventPopup";
-
+import dayjs from 'dayjs';
 
 let clickedEvent = {
   id: "randomlyInitializedEvent",
@@ -22,6 +22,8 @@ let clickedEvent = {
     description: "",
   },
 };
+
+//let clickedCell = null;
 
 const CalendarPage = () => {
   const calendarRef = React.useRef(null);
@@ -79,27 +81,47 @@ const CalendarPage = () => {
   //   return calendarRef;
   // };
 
+  const changeClickedEvent = (aEvent) => {
+    clickedEvent = aEvent;
+    return Promise.resolve();
+  };
+
+  const millsecToTime = (ms) => {
+    let h,m,s;
+    h = Math.floor(ms/1000/60/60);
+    m = Math.floor((ms/1000/60/60 - h)*60);
+    s = Math.floor(((ms/1000/60/60 - h)*60 - m)*60);
+    // to get time format 00:00:00
+
+    s < 10 ? s = `0${s}`: s = `${s}`
+    m < 10 ? m = `0${m}`: m = `${m}`
+    h < 10 ? h = `0${h}`: h = `${h}`
+    return h+":"+m+":"+s;
+  }
+
   const onEventClickCustom = (info) => {
     console.log("onClick!");
 
     changeClickedEvent(info.event).then(() => {
       setShowClickEventPopup(true);
-      console.log(clickedEvent);
     });
   };
+
+  // const changeClickedCell = (aCell) => {
+  //   clickedCell = aCell;
+  //   return Promise.resolve();
+  // };
 
   const dateClick = (info) => {
     console.log("Date clicked: ", info.dateStr);
     setClickedCell(info.dateStr);
-    console.log(info);
-    console.log("State should now contain the clicked date:", clickedCell);
-    setShowAddEventButtonPopup(true);
-  }
+    // changeClickedCell(info.dateStr).then(() => {
 
-  const changeClickedEvent = (aEvent) => {
-    clickedEvent = aEvent;
-    return Promise.resolve();
-  };
+    setShowAddEventButtonPopup(true);
+    //   console.log("State should now contain the clicked date:", clickedCell);
+    // });
+    
+  }
 
   const onEventRemove = async (changedInfo) => {
     console.log("onRemove!");
@@ -128,7 +150,7 @@ const CalendarPage = () => {
 
   const onEventAdd = async (addInfo) => {
     console.log("onAdd!");
-    console.log(addInfo);
+    //console.log(addInfo);
     let newEvent = addInfo.event.toPlainObject({ collapseExtendedProps: true });
     // if (
     //   recurringEvent.id === newEvent.id &&
@@ -148,6 +170,7 @@ const CalendarPage = () => {
     let newEvent = changedInfo.event.toPlainObject({
       collapseExtendedProps: true,
     });
+    console.log("new Event: ", newEvent);
     const updates = {};
     updates[`/events/${newEvent.id}`] = newEvent;
     await update(ref(database), updates).catch((error) => {
@@ -201,7 +224,7 @@ const CalendarPage = () => {
               editable
               expandRows
               aspectRatio={0.8}
-              timeZone="CST"
+              timeZone="local"
               events={eventsInCalendar}
               eventClick={onEventClickCustom}
               eventChange={onEventChange}

@@ -103,6 +103,7 @@ const CalendarPage = () => {
     console.log("onClick!");
 
     changeClickedEvent(info.event).then(() => {
+      console.log(clickedEvent)
       setShowClickEventPopup(true);
     });
   };
@@ -178,6 +179,10 @@ const CalendarPage = () => {
     });
   };
 
+  const setClickedCellfunc = (e) => {
+    setClickedCell(e);
+  }
+
   return (
     <div className="mx-auto flex">
       <div className="fixed h-screen">
@@ -246,6 +251,7 @@ const CalendarPage = () => {
               calendarRef={calendarRef}
               buttonType="scr_small"
               clickedDateTime={clickedCell}
+              setClickedDateTime={setClickedCellfunc}
             />
           </div>
         </div>

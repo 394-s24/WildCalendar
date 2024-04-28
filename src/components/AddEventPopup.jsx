@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Form, DatePicker, Input, TimePicker, Checkbox } from "antd";
 import { Button } from "@/components/Button";
 import { PlusOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import moment from 'moment'
+import dayjs from 'dayjs';
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 
@@ -33,9 +34,12 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
   const [form] = Form.useForm();
   const [recur, setRecur] = useState(false);
   const [daysOfWeek, setDaysOfWeek] = useState([]);
+  
 
   const showModal = () => {
     setOpen(true);
+    setRecur(false);
+    
   };
 
   const handleCancel = () => {
@@ -74,7 +78,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
         startRecur: fieldsValue["start-recurrence"].format("YYYY-MM-DD"),
         endRecur: fieldsValue["end-recurrence"].format("YYYY-MM-DD"),
         daysOfWeek: daysOfWeek,
-        //id: newId,
+        id: newId,
         editable: false,
         groupId: newId,
         NWUClass: false,
@@ -102,7 +106,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
         recurEvent: false,
       };
     }
-    //console.log(values)
+    console.log(values)
     setOpen(false);
     calendarRef.current.getApi().addEvent(values);
   };
@@ -139,7 +143,8 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
           //   'date-picker': clickedDateTime ? clickedDateTime : undefined,
           // }}
           initialValues={{
-            'date-picker': clickedDateTime ? moment(clickedDateTime) : moment()
+            'range-picker1': clickedDateTime ? [dayjs(clickedDateTime), null] : [],
+            'start-recurrence' : clickedDateTime ? dayjs(clickedDateTime) : null,
           }}
         >
           <Form.Item
@@ -168,7 +173,12 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
           </Form.Item>
 
           {!recur && (
-            <Form.Item name="range-picker1" label="Start and End">
+            <Form.Item name="range-picker1" label="Start and End" rules={[
+              {
+                required: true,
+                message: "Start time and end time of the event must not be empty!",
+              },
+            ]}>
                 <RangePicker {...rangeConfig} showTime format="YYYY-MM-DD HH:mm"
                     />
             </Form.Item>
@@ -186,19 +196,38 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
           )} */}
 
           {recur && (
-            <Form.Item name="start-recurrence" label="Start Date">
+            <Form.Item name="start-recurrence" label="Start Date" rules={[
+              {
+                required: true,
+                message: "Start date of the recurring event must not be empty!",
+              },
+            ]}>
               <DatePicker />
             </Form.Item>
           )}
 
           {recur && (
-            <Form.Item name="end-recurrence" label="End Date">
+            <Form.Item name="end-recurrence" label="End Date" rules={[
+              {
+                required: true,
+                message: "End date of the recurring event must not be empty!",
+              },
+            ]}>
               <DatePicker />
             </Form.Item>
           )}
 
           {recur && (
-            <Form.Item name="time-picker" label="Time">
+            <Form.Item 
+              name="time-picker" 
+              label="Time"
+              rules={[
+                {
+                  required: true,
+                  message: "Start time and end time of the recurring event must not be empty!",
+                },
+              ]}
+            >
               <TimePicker.RangePicker
                 format="HH:mm A"
                 minuteStep={5}

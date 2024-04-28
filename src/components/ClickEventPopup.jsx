@@ -46,6 +46,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     const [descCopy, setDescCopy] = useState(currEvent.extendedProps.description);
     const [daysOfWeek, setDaysOfWeek] = useState([]);
     const [mostRecentEvent, setMostRecentEvent] = useState(null);
+    const [finishDisabled, setFinishDisabled] = useState(true);
 
     useEffect (
         () => {
@@ -54,15 +55,16 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
             }
             form.resetFields();
             //console.log("useEffect for reset form!")
-        }, [open, clickedEdit]
+        }, [open]
     )
 
     const handleOk = () => {
         setOpen(false);
     };
 
+
     const handleEditOk = (fieldsValue) => {
-        let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
+        let event1 = calendarRef.current.getApi().getEventById(mostRecentEvent.id);
         if (currEvent.extendedProps.recurEvent) {
             let newId = uuidv4();
             // event1.setProp("title", fieldsValue["title"])
@@ -86,12 +88,12 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
             let values = {
                 title: fieldsValue["title"],
                 startTime: fieldsValue["start-recurrence"]
-                  .clone()
+                  //.clone()
                   .hour(fieldsValue["time-picker"][0].hour())
                   .minute(fieldsValue["time-picker"][0].minute())
                   .format("HH:mm"),
                 endTime: fieldsValue["end-recurrence"]
-                  .clone()
+                  //.clone()
                   .hour(fieldsValue["time-picker"][1].hour())
                   .minute(fieldsValue["time-picker"][1].minute())
                   .format("HH:mm"),
@@ -105,14 +107,15 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 ),
                 //id: newId,
                 editable: false,
+                id: newId,
                 groupId: newId,
                 NWUClass: false,
                 recurEvent: true,
-              };
-              console.log(values)
-              event1 = calendarRef.current.getApi().addEvent(values);
-              console.log(event1)
-              setMostRecentEvent(calendarRef.current.getApi().getEventById(newId));
+            };
+            console.log(values)
+            let event2 = calendarRef.current.getApi().addEvent(values);
+            console.log(event2)
+            setMostRecentEvent(event2);
         } else {
             event1.setProp("title", fieldsValue["title"])
             event1.setStart(fieldsValue["range-picker1"][0]
@@ -162,13 +165,15 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     const onClosingCompletely = () => {
         setOpen(false);
         setClickedEdit(false);
-        setMostRecentEvent(null);;
+        //setMostRecentEvent(null);;
     };
 
     const onClickEditButton = () => {
       form.resetFields();
+      console.log(mostRecentEvent)
       if (calendarRef != null && calendarRef.current != null) {
         setClickedEdit(true);
+        setFinishDisabled(true);
       }
     };
 
@@ -184,6 +189,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
 
     const formatTimeToAMPM = (dateString) => {
         const localDate = new Date(dateString);
+        //console.log(localDate)
     
         let hours = localDate.getHours(); // get local hours
         const minutes = localDate.getMinutes();
@@ -225,6 +231,10 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
         return [];
     }
 
+    const onFormValueChange = ({changedValue, currValue}) => {
+        setFinishDisabled(false)
+    }
+
     return (
         <Modal
             title={mostRecentEvent != null ? mostRecentEvent.title : currEvent.title}
@@ -237,7 +247,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
             footer={clickedEdit ?
                 (_, { OkBtn, CancelBtn }) => (
                     <>
-                        <Button onClick={onClickFinishButton} type="primary">Finish</Button>
+                        <Button onClick={onClickFinishButton} disabled={finishDisabled} type="primary">Finish</Button>
                         <Button onClick={onClickCancelEditButton} danger>Cancel Edit</Button>
                     </>
                 )
@@ -260,15 +270,6 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                     </>
                 )}
         >
-            {false ? (
-                    <Divider>
-                        {/*Please don't delete this divider!*/}
-                        {clickedEdit}
-                    </Divider>
-                ) : (
-                    <></>
-            )}
-
             {clickedEdit ? (
                 <>
                     {/* <div>
@@ -307,6 +308,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                             //   // 'date-picker': clickedDateTime ? clickedDateTime : undefined,
                             //   'date-picker': clickedDateTime ? clickedDateTime : undefined,
                             // }}
+                            onValuesChange={onFormValueChange}
                             initialValues={
                                 !mostRecentEvent.extendedProps.recurEvent ? {
                                     'title' : mostRecentEvent.title,
@@ -338,26 +340,46 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                             </Form.Item>
 
                             {!currEvent.extendedProps.recurEvent && (
-                                <Form.Item name="range-picker1" label="Start and End">
+                                <Form.Item name="range-picker1" label="Start and End" rules={[
+                                    {
+                                      required: true,
+                                      message: "Start time and end time of the recurring event must not be empty!",
+                                    },
+                                  ]}>
                                     <RangePicker {...rangeConfig} showTime format="YYYY-MM-DD HH:mm"
                                         />
                                 </Form.Item>
                             )}
 
                             {currEvent.extendedProps.recurEvent && (
-                                <Form.Item name="start-recurrence" label="Start Date">
+                                <Form.Item name="start-recurrence" label="Start Date" rules={[
+                                    {
+                                      required: true,
+                                      message: "Start time and end time of the recurring event must not be empty!",
+                                    },
+                                  ]}>
                                     <DatePicker />
                                 </Form.Item>
                             )}
 
                             {currEvent.extendedProps.recurEvent && (
-                                <Form.Item name="end-recurrence" label="End Date">
+                                <Form.Item name="end-recurrence" label="End Date" rules={[
+                                    {
+                                      required: true,
+                                      message: "Start time and end time of the recurring event must not be empty!",
+                                    },
+                                  ]}>
                                     <DatePicker />
                                 </Form.Item>
                             )}
 
                             {currEvent.extendedProps.recurEvent && (
-                                <Form.Item name="time-picker" label="Time">
+                                <Form.Item name="time-picker" label="Time" rules={[
+                                    {
+                                      required: true,
+                                      message: "Start time and end time of the recurring event must not be empty!",
+                                    },
+                                  ]}>
                                     <TimePicker.RangePicker
                                         format="HH:mm A"
                                         minuteStep={5}
@@ -394,32 +416,34 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 </>
 
             ) : (
-                <>
-                    {currEvent.groupId !== '' ? <>
-                        <div>
-                            Start: {formatTimeToAMPM(currEvent.start)}
-                            <Divider type="vertical" />
-                            End: {formatTimeToAMPM(currEvent.end)}
-                        </div>
-                    </> : (
-                        <div>
-                            Start: {formatTimeToAMPM(getMostRecentRange()[0])}
-                            <Divider type="vertical" />
-                            End: {formatTimeToAMPM(getMostRecentRange()[1])}
-                        </div>
-                    )}
-
-                    {
-                        (mostRecentEvent != null && mostRecentEvent.extendedProps.description.length > 0) ?
-                        (
+                mostRecentEvent ? 
+                    <>
+                        {mostRecentEvent.extendedProps.recurEvent ? <>
                             <div>
-                                Description: {mostRecentEvent.extendedProps.description}
+                                Start: {formatTimeToAMPM('2001-03-25 '+millsecToTime(mostRecentEvent._def.recurringDef.typeData.startTime['milliseconds']))}
+                                <Divider type="vertical" />
+                                End: {formatTimeToAMPM('2001-03-25 '+millsecToTime(mostRecentEvent._def.recurringDef.typeData.endTime['milliseconds']))}
                             </div>
-                        ) : (
-                            <></>
-                        )
-                    }
-                </>
+                        </> : (
+                            <div>
+                                Start: {formatTimeToAMPM(getMostRecentRange()[0])}
+                                <Divider type="vertical" />
+                                End: {formatTimeToAMPM(getMostRecentRange()[1])}
+                            </div>
+                        )}
+
+                        {
+                            (mostRecentEvent.extendedProps.description.length > 0) ?
+                            (
+                                <div>
+                                    Description: {mostRecentEvent.extendedProps.description}
+                                </div>
+                            ) : (
+                                <></>
+                            )
+                        }
+                    </> 
+                : <></>
             )}
         </Modal> 
     );

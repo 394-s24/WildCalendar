@@ -84,7 +84,7 @@ const AddEventButtonPopup = ({
         end: endRecStr,
         daysOfWeek: daysOfWeek,
         id: newId,
-        editable: true,
+        editable: false,
         groupId: title,
         NWUClass: false,
         recurEvent: true,

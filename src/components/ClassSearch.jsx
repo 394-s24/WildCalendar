@@ -69,7 +69,8 @@ const ClassSearch = ({ calendarRef }) => {
       endTime: c.endTime,
       editable: false,
       NWUClass: true,
-      description: ''
+      description: '',
+      recurEvent: true
     };
   };
 

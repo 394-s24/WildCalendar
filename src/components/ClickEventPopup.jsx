@@ -1,11 +1,4 @@
-import {
-  getDatabase,
-  ref,
-  update,
-  push,
-  remove,
-  onValue,
-} from "@firebase/database";
+import { getDatabase, ref, update, remove } from "@firebase/database";
 
 import React, { useState, useEffect } from "react";
 import {
@@ -18,12 +11,12 @@ import {
   Form,
   Checkbox,
   TimePicker,
+  message,
 } from "antd";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 
 const { RangePicker } = DatePicker;
-
 const weekdays = [
   "Sunday",
   "Monday",
@@ -33,7 +26,6 @@ const weekdays = [
   "Friday",
   "Saturday",
 ];
-
 const rangeConfig = {
   rules: [
     {
@@ -45,18 +37,18 @@ const rangeConfig = {
 };
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
+const dateFormat = "YYYY-MM-DD";
 
 const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
   const [form] = Form.useForm();
   const [clickedEdit, setClickedEdit] = useState(false);
-  const [mostRecentEvent, setMostRecentEvent] = useState(null);
+  const [activeEvent, setActiveEvent] = useState(null);
   const [finishDisabled, setFinishDisabled] = useState(true);
 
   useEffect(() => {
     if (calendarRef != null && calendarRef.current != null) {
-      setMostRecentEvent(
-        calendarRef.current.getApi().getEventById(currEvent.id)
-      );
+      setActiveEvent(calendarRef.current.getApi().getEventById(currEvent.id));
+      console.log('here', activeEvent)
     }
     form.resetFields();
     if (clickedEdit) {
@@ -69,58 +61,91 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
   };
 
   const handleEditOk = (fieldsValue) => {
-    let event1 = calendarRef.current.getApi().getEventById(mostRecentEvent.id);
+    let event1 = calendarRef.current.getApi().getEventById(activeEvent.id);
+    const newId = uuidv4();
+
     if (currEvent.extendedProps.recurEvent) {
-      let newId = uuidv4();
-      let startrecur1 = new Date(
-        fieldsValue["start-recurrence"].format("YYYY-MM-DD")
-      );
-      startrecur1.setDate(startrecur1.getDate() + 1);
-      let startrecur1_string = startrecur1.toISOString().split("T")[0];
-      let endrecur1 = new Date(
-        fieldsValue["end-recurrence"].format("YYYY-MM-DD")
-      );
-      endrecur1.setDate(endrecur1.getDate() + 1);
-      let endrecur1_string = endrecur1.toISOString().split("T")[0];
+      let {
+        title,
+        description,
+        startRecurrence,
+        endRecurrence,
+        timePicker,
+        daysOfWeek,
+      } = fieldsValue;
+
+      let startrecur = new Date(startRecurrence.format(dateFormat));
+      startrecur.setDate(startrecur.getDate() + 1);
+      let startrecur_string = startrecur.toISOString().split("T")[0];
+
+      let endrecur = new Date(endRecurrence.format(dateFormat));
+      endrecur.setDate(endrecur.getDate() + 1);
+      let endrecur_string = endrecur.toISOString().split("T")[0];
+
       let values = {
-        title: fieldsValue["title"],
-        startTime: fieldsValue["start-recurrence"]
-          .hour(fieldsValue["time-picker"][0].hour())
-          .minute(fieldsValue["time-picker"][0].minute())
+        title: title,
+        startTime: startRecurrence
+          .hour(timePicker[0].hour())
+          .minute(timePicker[0].minute())
           .format("HH:mm"),
-        endTime: fieldsValue["end-recurrence"]
-          .hour(fieldsValue["time-picker"][1].hour())
-          .minute(fieldsValue["time-picker"][1].minute())
+        endTime: endRecurrence
+          .hour(timePicker[1].hour())
+          .minute(timePicker[1].minute())
           .format("HH:mm"),
-        description: fieldsValue["description"]
-          ? fieldsValue["description"]
-          : "",
-        startRecur: startrecur1_string,
-        endRecur: endrecur1_string,
-        daysOfWeek: fieldsValue["daysOfWeek"].map((day) =>
-          weekdays.indexOf(day)
-        ),
-        editable: false,
+        description: description ? description : "",
+        startRecur: startrecur_string,
+        endRecur: endrecur_string,
+        daysOfWeek: daysOfWeek.map((day) => weekdays.indexOf(day)),
+        editable: true,
         id: newId,
-        groupId: fieldsValue["title"],
+        groupId: title,
         NWUClass: false,
         recurEvent: true,
         firebaseId: event1.extendedProps.firebaseId,
       };
-      event1.remove();
-      let event2 = calendarRef.current.getApi().addEvent(values);
-      setMostRecentEvent(event2);
+
+      const db = getDatabase();
+      const eventRef = ref(db, `events/${values.firebaseId}`);
+
+      update(eventRef, values)
+        .then(() => {
+          message.success("Class updated in calendar.");
+        })
+        .catch((error) => {
+          message.error(`Failed to update class: ${error.message}`);
+        });
+
+      let event2 = calendarRef.current.getApi().getEventById(values.id);
+      setActiveEvent(event2);
+      handleOk();
     } else {
-      event1.setProp("title", fieldsValue["title"]);
-      event1.setStart(fieldsValue["range-picker1"][0].format(dateTimeFormat));
-      event1.setEnd(fieldsValue["range-picker1"][1].format(dateTimeFormat));
-      event1.setExtendedProp(
-        "description",
-        fieldsValue["description"] ? fieldsValue["description"] : ""
-      );
-      setMostRecentEvent(
-        calendarRef.current.getApi().getEventById(currEvent.id)
-      );
+      let { title, rangePicker, description } = fieldsValue;
+      let values = {
+        title: title,
+        description: description ? description : "",
+        start: rangePicker[0].format(dateTimeFormat),
+        end: rangePicker[1].format(dateTimeFormat),
+        editable: true,
+        id: newId,
+        groupId: title,
+        NWUClass: false,
+        recurEvent: false,
+        firebaseId: event1.extendedProps.firebaseId,
+      };
+
+      const db = getDatabase();
+      const eventRef = ref(db, `events/${values.firebaseId}`);
+
+      update(eventRef, values)
+        .then(() => {
+          message.success("Class updated in calendar.");
+        })
+        .catch((error) => {
+          message.error(`Failed to update class: ${error.message}`);
+        });
+      let event2 = calendarRef.current.getApi().getEventById(values.id);
+      setActiveEvent(event2);
+      handleOk();
     }
     setClickedEdit(false);
   };
@@ -132,11 +157,10 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
 
   const onModalOpenChange = () => {
     if (calendarRef != null && calendarRef.current != null) {
-      setMostRecentEvent(
-        calendarRef.current.getApi().getEventById(currEvent.id)
-      );
+      setActiveEvent(calendarRef.current.getApi().getEventById(currEvent.id));
     }
     form.resetFields();
+    console.log(activeEvent)
   };
 
   const onClickDelete = () => {
@@ -148,6 +172,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
       remove(eventRef);
       event1.remove();
       setOpen(false);
+      message.success("Event deleted successfully.");
     }
   };
 
@@ -158,61 +183,42 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
   };
 
   const setFormInitialValue = () => {
-    if (mostRecentEvent) {
-      if (!mostRecentEvent.extendedProps.recurEvent) {
+    if (activeEvent) {
+      if (!activeEvent.extendedProps.recurEvent) {
         form.setFieldsValue({
-          title: mostRecentEvent.title,
+          title: activeEvent.title,
         });
         form.setFieldsValue({
-          "range-picker1": [
-            dayjs(getMostRecentRange()[0]),
-            dayjs(getMostRecentRange()[1]),
-          ],
+          rangePicker: [dayjs(activeEvent.start), dayjs(activeEvent.end)],
         });
         form.setFieldsValue({
-          description: mostRecentEvent.extendedProps.description,
+          description: activeEvent.extendedProps.description,
         });
       } else {
         form.setFieldsValue({
-          title: mostRecentEvent.title,
+          title: activeEvent.title,
         });
         form.setFieldsValue({
-          "start-recurrence": dayjs(
-            mostRecentEvent._def.recurringDef.typeData.startRecur
+          startRecurrence: dayjs(
+            activeEvent._def.recurringDef.typeData.startRecur
           ),
         });
         form.setFieldsValue({
-          "end-recurrence": dayjs(
-            mostRecentEvent._def.recurringDef.typeData.endRecur
-          ),
+          endRecurrence: dayjs(activeEvent._def.recurringDef.typeData.endRecur),
         });
         form.setFieldsValue({
-          "time-picker": [
-            dayjs(
-              millsecToTime(
-                mostRecentEvent._def.recurringDef.typeData.startTime[
-                  "milliseconds"
-                ]
-              ),
-              "HH:mm:ss"
-            ),
-            dayjs(
-              millsecToTime(
-                mostRecentEvent._def.recurringDef.typeData.endTime[
-                  "milliseconds"
-                ]
-              ),
-              "HH:mm:ss"
-            ),
+          timePicker: [
+            dayjs(activeEvent._def.recurringDef.typeData.startTime, "HH:mm:ss"),
+            dayjs(activeEvent._def.recurringDef.typeData.endTime, "HH:mm:ss"),
           ],
         });
         form.setFieldsValue({
-          daysOfWeek: mostRecentEvent._def.recurringDef.typeData.daysOfWeek.map(
+          daysOfWeek: activeEvent._def.recurringDef.typeData.daysOfWeek.map(
             (day) => weekdays[day]
           ),
         });
         form.setFieldsValue({
-          description: mostRecentEvent.extendedProps.description,
+          description: activeEvent.extendedProps.description,
         });
       }
     }
@@ -223,6 +229,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
       setClickedEdit(true);
       setFinishDisabled(true);
     }
+    console.log(currEvent)
     form.resetFields();
     setFormInitialValue();
   };
@@ -236,42 +243,18 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
     form.resetFields();
   };
 
-  const formatTimeToAMPM = (dateString) => {
-    const localDate = new Date(dateString);
-    let hours = localDate.getHours(); // get local hours
-    const minutes = localDate.getMinutes();
-    const ampm = hours >= 12 ? "PM" : "AM";
+  function convertTo12Hr(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "pm" : "am";
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
-    const minutesStr = minutes < 10 ? "0" + minutes : minutes;
-    return `${hours}:${minutesStr} ${ampm}`;
-  };
+    minutes = minutes < 10 ? "0" + minutes : minutes;
 
-  const millsecToTime = (ms) => {
-    let h, m, s;
-    h = Math.floor(ms / 1000 / 60 / 60);
-    m = Math.floor((ms / 1000 / 60 / 60 - h) * 60);
-    s = Math.floor(((ms / 1000 / 60 / 60 - h) * 60 - m) * 60);
+    const strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  }
 
-    s < 10 ? (s = `0${s}`) : (s = `${s}`);
-    m < 10 ? (m = `0${m}`) : (m = `${m}`);
-    h < 10 ? (h = `0${h}`) : (h = `${h}`);
-    return h + ":" + m + ":" + s;
-  };
-
-  const getMostRecentRange = () => {
-    if (calendarRef != null && calendarRef.current != null) {
-      let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
-      if (event1 != null) {
-        let startTime = null;
-        let endTime = null;
-        startTime = new Date(event1.start);
-        endTime = new Date(event1.end);
-        return [startTime, endTime];
-      }
-    }
-    return [];
-  };
 
   const onFormValueChange = () => {
     setFinishDisabled(false);
@@ -279,7 +262,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
 
   return (
     <Modal
-      title={mostRecentEvent != null ? mostRecentEvent.title : ""}
+      title={activeEvent != null ? activeEvent.title : ""}
       open={open}
       onOk={handleOk}
       onCancel={handleCancel}
@@ -314,7 +297,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
                 </Popconfirm>
                 <Button
                   onClick={onClickEditButton}
-                  disabled={currEvent.extendedProps.NWUClass}
+                  disabled={currEvent.extendedProps.recurEvent}
                 >
                   Edit
                 </Button>
@@ -326,7 +309,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
     >
       {clickedEdit ? (
         <>
-          {mostRecentEvent != null ? (
+          {activeEvent != null ? (
             <Form
               id="EditEventForm"
               form={form}
@@ -349,7 +332,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
 
               {!currEvent.extendedProps.recurEvent && (
                 <Form.Item
-                  name="range-picker1"
+                  name="rangePicker"
                   label="Start and End"
                   rules={[
                     {
@@ -369,7 +352,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
 
               {currEvent.extendedProps.recurEvent && (
                 <Form.Item
-                  name="start-recurrence"
+                  name="startRecurrence"
                   label="Start Date"
                   rules={[
                     {
@@ -385,7 +368,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
 
               {currEvent.extendedProps.recurEvent && (
                 <Form.Item
-                  name="end-recurrence"
+                  name="endRecurrence"
                   label="End Date"
                   rules={[
                     {
@@ -401,7 +384,7 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
 
               {currEvent.extendedProps.recurEvent && (
                 <Form.Item
-                  name="time-picker"
+                  name="timePicker"
                   label="Time"
                   rules={[
                     {
@@ -448,42 +431,27 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
             <></>
           )}
         </>
-      ) : mostRecentEvent ? (
+      ) : activeEvent ? (
         <>
-          {mostRecentEvent.extendedProps.recurEvent ? (
+          {activeEvent.extendedProps.recurEvent ? (
             <>
               <div>
-                Start:{" "}
-                {formatTimeToAMPM(
-                  "2001-03-25 " +
-                    millsecToTime(
-                      mostRecentEvent._def.recurringDef.typeData.startTime[
-                        "milliseconds"
-                      ]
-                    )
-                )}
+                {/* Start: {convertTo12Hr(activeEvent.startTime)}
                 <Divider type="vertical" />
-                End:{" "}
-                {formatTimeToAMPM(
-                  "2001-03-25 " +
-                    millsecToTime(
-                      mostRecentEvent._def.recurringDef.typeData.endTime[
-                        "milliseconds"
-                      ]
-                    )
-                )}
+                End: {convertTo12Hr(activeEvent.endTime)} */}
               </div>
             </>
           ) : (
             <div>
-              Start: {formatTimeToAMPM(getMostRecentRange()[0])}
+              {/* Start: {convertTo12Hr(getMostRecentRange()[0])} */}
+              Start: {convertTo12Hr(activeEvent.start)}
               <Divider type="vertical" />
-              End: {formatTimeToAMPM(getMostRecentRange()[1])}
+              End: {convertTo12Hr(activeEvent.end)}
             </div>
           )}
 
-          {mostRecentEvent.extendedProps.description.length > 0 ? (
-            <div>Description: {mostRecentEvent.extendedProps.description}</div>
+          {activeEvent.extendedProps.description.length > 0 ? (
+            <div>Description: {activeEvent.extendedProps.description}</div>
           ) : (
             <></>
           )}

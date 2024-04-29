@@ -29,6 +29,7 @@
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dayjs-plugin-utc": "^0.1.2",
     "esbuild": "^0.20.2",
     "firebase": "^10.10.0",
     "lucide-react": "^0.365.0",

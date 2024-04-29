@@ -123,7 +123,7 @@ const CalendarPage = () => {
               editable
               expandRows
               aspectRatio={0.8}
-              timeZone="UTC"
+              timeZone="local"
               events={calendarEvents}
               eventClick={onEventClick}
               // eventChange={onEventChange}

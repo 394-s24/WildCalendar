@@ -3,7 +3,6 @@ import TodoItem from '../components/TodoItem';
 import { database } from '../firebase';
 import {ref, onValue, push, update} from '@firebase/database';
 import { Button, Modal } from 'antd';
-import TodoSidebar from "../components/TodoSidebar";
 
 const AddSectionBtn = ({ onClick, isCreateCatModalOpen }) => {
   return (
@@ -127,9 +126,6 @@ const TodoList = () => {
 
   return (
     <div className="mx-auto flex">
-      <div className="fixed h-screen">
-        <TodoSidebar/>
-      </div>
       <div className="mt-8 sm:mt-0 pt-24 px-2 sm:ps-20 lg:px-64 w-max mx-auto max-w-[90vw]">
         <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold p-4">My Todo List</h1>

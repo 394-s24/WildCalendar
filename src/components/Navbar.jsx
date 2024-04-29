@@ -113,9 +113,6 @@ function Navbar() {
             <ButtonLink href="/calendar">
               Calendar
             </ButtonLink>
-            <ButtonLink href="/about">
-              About
-            </ButtonLink>
           </div>
 
           <Box sx={{ flexGrow: 0 }} className="">

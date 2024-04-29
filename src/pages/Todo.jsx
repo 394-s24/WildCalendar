@@ -53,6 +53,7 @@ const TodoList = () => {
       console.log(newData)
 
       const newTodoRef = push(ref(database, `todo/${eventName}`));
+      console.log("NEW TODO REF:", newTodoKey)
       const newTodoKey = newTodoRef.key;
 
       const updates = {};

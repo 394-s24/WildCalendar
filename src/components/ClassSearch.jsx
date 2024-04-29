@@ -1,7 +1,7 @@
 // Imports
 import React, { useState, useEffect } from "react";
 import { AutoComplete, message } from "antd";
-import { getDatabase, ref, onValue, push, set } from "firebase/database";
+import { getDatabase, ref, onValue, push, update, set } from "firebase/database";
 
 // Class Search
 const ClassSearch = ({ calendarRef }) => {
@@ -87,7 +87,28 @@ const ClassSearch = ({ calendarRef }) => {
       formattedClassEvent.firebaseId = newAutoId;
       set(newEventRef, formattedClassEvent);
       message.success("Class added to calendar.");
-    } 
+
+      const eventName = formattedClassEvent.groupId;
+      const newTodoRef = ref(db, `todo/${eventName}`);
+      const newCategoryRef = push(newTodoRef);
+      const newData = {
+        description: formattedClassEvent.description,
+        date: formattedClassEvent.start,
+        time: formattedClassEvent.startTime,
+      };
+
+      const newTodoKey = newCategoryRef.key;
+      const updates = {};
+
+      updates[`/todo/${eventName}/${newTodoKey}`] = newData;
+
+      update(ref(db), updates)
+          .catch((error) => {
+              console.error("Error adding new item: ", error);
+          });
+
+      console.log("Added");
+    }
     else {
       message.error("Course already added.")
     }

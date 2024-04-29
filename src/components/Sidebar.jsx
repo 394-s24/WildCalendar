@@ -74,27 +74,12 @@ const Sidebar = ({ calendarRef }) => {
           calendarRef={calendarRef}
           buttonType="scr_small"
         />
-        <Button variant="outline" size="sm">
-          <SettingOutlined />
-        </Button>
       </div>
       {/* large */}
       <div className="my-10 hidden lg:flex flex-col justify-center gap-6 items-center px-3">
         <div className="bg-gray-200 p-2 flex flex-col justify-center rounded-md text-sm font-medium w-full">
           <p className="ms-1 mb-2 text-[16px]">Add Classes</p>
           <ClassSearch calendarRef={calendarRef}/>
-
-          <div className="flex justify-start items-start mt-1">
-            <Button variant="outline" size="tester">
-              <FilterOutlined />
-            </Button>
-            <Button variant="outline" size="tester" className="ml-1">
-              <MenuOutlined />
-            </Button>
-            <Button variant="outline" size="tester" className="ml-1">
-              <PlusOutlined />
-            </Button>
-          </div>
         </div>
         <div className="bg-gray-200 p-2 flex flex-col justify-center rounded-md text-sm font-medium w-full">
           <p className="ms-1 mb-2 text-[16px]">New Event</p>
@@ -105,10 +90,6 @@ const Sidebar = ({ calendarRef }) => {
             buttonType="default"
           />
         </div>
-        <Button variant="secondary" className="w-full flex justify-start">
-          <SettingOutlined />
-          <p className="ms-2 text-[16px]">Settings</p>
-        </Button>
       </div>
     </nav>
   );

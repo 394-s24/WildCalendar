@@ -27,6 +27,7 @@ const CalendarPage = () => {
   const [showClickEventPopup, setShowClickEventPopup] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [classList, setClassList] = useState([]);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -34,46 +35,47 @@ const CalendarPage = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // useEffect(() => {
+  //   fetEventsFromDB();
+  //   fetClassesFromDB();
+  //   console.log("useEffect called!");
+  // }, []);
+
   useEffect(() => {
-    // fetEventsFromDB();
-    // fetClassesFromDB();
+    fetClassesFromDB();
     console.log("useEffect called!");
   }, []);
 
-  // const fetEventsFromDB = () => {
-  //   const eventsRef = ref(database, "events");
-  //   const eventListener = onValue(eventsRef, (snapshot) => {
-  //     const eventData = snapshot.val();
-  //     let tmp_list = []; //events_list[]
-  //     if (eventData) {
-  //       Object.entries(eventData).forEach(([_, item]) => {
-  //         tmp_list = [...tmp_list, item];
-  //       });
-  //       setEventsInCalendar(tmp_list);
-  //     }
-  //   });
+  const fetEventsFromDB = () => {
+    const eventsRef = ref(database, "events");
+    const eventListener = onValue(eventsRef, (snapshot) => {
+      const eventData = snapshot.val();
+      let tmp_list = []; //events_list[]
+      if (eventData) {
+        Object.entries(eventData).forEach(([_, item]) => {
+          tmp_list = [...tmp_list, item];
+        });
+        setEventsInCalendar(tmp_list);
+      }
+    });
 
-  //   return () => {
-  //     eventListener();
-  //   };
-  // };
+    return () => {
+      eventListener();
+    };
+  };
 
-  // const fetClassesFromDB = () => {
-  //   const classesRef = ref(database, "NWUClass");
-  //   const classListener = onValue(classesRef, (snapshot) => {
-  //     const classData = snapshot.val();
-  //     if (classData) {
-  //       setClassList(classData);
-  //     }
-  //   });
-  //   return () => {
-  //     classListener();
-  //   };
-  // };
-
-  // const fetchCalendarRef = () => {
-  //   return calendarRef;
-  // };
+  const fetClassesFromDB = () => {
+    const classesRef = ref(database, "NWUClass");
+    const classListener = onValue(classesRef, (snapshot) => {
+      const classData = snapshot.val();
+      if (classData) {
+        setClassList(classData);
+      }
+    });
+    return () => {
+      classListener();
+    };
+  };
 
   const onEventClickCustom = (info) => {
     console.log("onClick!");

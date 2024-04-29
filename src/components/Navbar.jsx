@@ -12,6 +12,7 @@ import {
 import Logo from "@/assets/CalendarIcon.png";
 import { Button } from "@/components/Button";
 import { Link, useLocation } from "react-router-dom";
+import { getAuth, onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 
 const ButtonLink = ({ href, children }) => {
 
@@ -45,6 +46,9 @@ function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [fullName, setFullName] = useState("A");
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -71,6 +75,28 @@ function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const auth = getAuth();
+
+  const handleSignOut = () => {
+    signOut(auth).then(() => {
+      console.log("User signed out successfully");
+      // Additional logic after signing out (e.g., redirecting to a login page)
+    }).catch((error) => {
+      console.error("Error signing out: ", error);
+    });
+  };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setLoggedIn(true);
+        setFullName(user.displayName);
+      } else {
+        setLoggedIn(false);
+      }
+    })
+  });
 
   return (
     <nav
@@ -106,44 +132,59 @@ function Navbar() {
         </button>
 
         <div className="flex sm:gap-6 order-3">
-          <div className="flex gap-4 justify-evenly">
-            <ButtonLink href="/todo">
-              Todo
-            </ButtonLink>
-            <ButtonLink href="/calendar">
-              Calendar
-            </ButtonLink>
-          </div>
 
-          <Box sx={{ flexGrow: 0 }} className="">
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {userMenu.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
+          {loggedIn ? (
+            <>
+              <div className="flex gap-4 justify-evenly">
+                <ButtonLink href="/todo">
+                  Todo
+                </ButtonLink>
+                <ButtonLink href="/calendar">
+                  Calendar
+                </ButtonLink>
+              </div>
+
+
+              <Box sx={{ flexGrow: 0 }} className="">
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar alt={fullName} src="/static/images/avatar/2.jpg" />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                {userMenu.map((setting) => (
+                  <MenuItem key={setting} onClick={() => {
+                    handleCloseUserMenu();
+                    if (setting === "Logout") {
+                      handleSignOut();
+                    }
+                  }}>
+                    <Typography textAlign="center">{setting}</Typography>
+                  </MenuItem>
+                ))}
+                </Menu>
+              </Box>
+            </>
+          ) : (
+            <ButtonLink href="/login">
+              Login
+            </ButtonLink>
+          )}
         </div>
       </div>
       <div

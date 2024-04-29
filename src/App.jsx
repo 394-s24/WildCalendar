@@ -4,6 +4,7 @@ import CalendarPage from './pages/Calendar';
 import Layout from "./pages/Layout";
 import Home from "./pages/Home"
 import './App.css';
+import Login from './pages/Login';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path="todo" element={<TodoList />} />
           <Route path="calendar" element={<CalendarPage />} />
+          <Route path="login" element={<Login />} />
         </Route>
       </Routes>
     </Router>

@@ -9,29 +9,27 @@ import React, { useState, useEffect, useRef } from "react";
 import ClickEventPopup from "../components/ClickEventPopup";
 import { getDatabase, ref, update, push, remove, onValue } from "@firebase/database";
 import Sidebar from "../components/Sidebar";
-import { cs_classes_list } from "@/lib/courseData";
-import AddEventButtonPopup from "../components/AddEventPopup";
-import dayjs from 'dayjs';
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
-let clickedEvent = {
-  id: "randomlyInitializedEvent",
-  title: "Random Event",
-  start: new Date("9999-03-28T11:00:00"),
-  end: new Date("9999-03-28T12:20:00"),
-  extendedProps: {
-    description: "",
-  },
-};
-
-//let clickedCell = null;
 
 const CalendarPage = () => {
 
   // References
   const calendarRef = useRef(null);
   const db = getDatabase();
+
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  // Authentication check and redirection
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      if (!user) {
+        navigate("/login");
+      }
+    });
+    return () => unsubscribe(); // Clean up the subscription
+  }, [navigate]);
 
   // Events, Event popup boolean, Window sizing, Recently clicked event
   const [calendarEvents, setCalendarEvents] = useState([]);

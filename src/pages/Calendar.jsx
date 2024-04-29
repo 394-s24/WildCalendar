@@ -10,6 +10,8 @@ import { ref, update, push, remove, onValue } from "@firebase/database";
 import { message } from "antd";
 import Sidebar from "../components/Sidebar";
 import { cs_classes_list } from "@/lib/courseData";
+import AddEventButtonPopup from "../components/AddEventPopup";
+import dayjs from 'dayjs';
 
 let clickedEvent = {
   id: "randomlyInitializedEvent",
@@ -21,12 +23,17 @@ let clickedEvent = {
   },
 };
 
+//let clickedCell = null;
+
 const CalendarPage = () => {
   const calendarRef = React.useRef(null);
-  const [eventsInCalendar, setEventsInCalendar] = useState(cs_classes_list.slice(1,4));
+  const [eventsInCalendar, setEventsInCalendar] = useState([]); //cs_classes_list.slice(1,4)
+  const [classList, setClassList] = useState([]);
   const [showClickEventPopup, setShowClickEventPopup] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [clickedCell, setClickedCell] = useState(null);
+  const [showAddEventButtonPopup, setShowAddEventButtonPopup] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -35,59 +42,104 @@ const CalendarPage = () => {
   }, []);
 
   useEffect(() => {
-    // fetEventsFromDB();
-    // fetClassesFromDB();
+    fetEventsFromDB();
+    fetClassesFromDB();
     console.log("useEffect called!");
   }, []);
 
-  // const fetEventsFromDB = () => {
-  //   const eventsRef = ref(database, "events");
-  //   const eventListener = onValue(eventsRef, (snapshot) => {
-  //     const eventData = snapshot.val();
-  //     let tmp_list = []; //events_list[]
-  //     if (eventData) {
-  //       Object.entries(eventData).forEach(([_, item]) => {
-  //         tmp_list = [...tmp_list, item];
-  //       });
-  //       setEventsInCalendar(tmp_list);
-  //     }
-  //   });
-
-  //   return () => {
-  //     eventListener();
-  //   };
-  // };
-
-  // const fetClassesFromDB = () => {
-  //   const classesRef = ref(database, "NWUClass");
-  //   const classListener = onValue(classesRef, (snapshot) => {
-  //     const classData = snapshot.val();
-  //     if (classData) {
-  //       setClassList(classData);
-  //     }
-  //   });
-  //   return () => {
-  //     classListener();
-  //   };
-  // };
-
-  // const fetchCalendarRef = () => {
-  //   return calendarRef;
-  // };
-
-  const onEventClickCustom = (info) => {
-    console.log("onClick!");
-
-    changeClickedEvent(info.event).then(() => {
-      setShowClickEventPopup(true);
-      console.log(clickedEvent);
+  const fetEventsFromDB = () => {
+    const eventsRef = ref(database, "events");
+    const eventListener = onValue(eventsRef, (snapshot) => {
+      const eventData = snapshot.val();
+      let tmp_list = []; //events_list[]
+      if (eventData) {
+        Object.entries(eventData).forEach(([_, item]) => {
+          let item_copy = item;
+          if(item.recurEvent)
+          {
+            console.log(item.startRecur)
+            let startrecur1 = new Date(item.startRecur);
+            startrecur1.setDate(startrecur1.getDate() + 1)
+            let startrecur1_string = startrecur1.toISOString().split("T")[0]
+            let endrecur1 = new Date(item.endRecur);
+            endrecur1.setDate(endrecur1.getDate() + 1)
+            let endrecur1_string = endrecur1.toISOString().split("T")[0]
+            item_copy = {
+              ...item,
+              startRecur: startrecur1_string,
+              endRecur: endrecur1_string
+            }
+          }
+          tmp_list = [...tmp_list, item];
+        });
+        setEventsInCalendar(tmp_list);
+      }
     });
+
+    return () => {
+      eventListener();
+    };
+  };
+
+  const fetClassesFromDB = () => {
+    const classesRef = ref(database, "NWUClass");
+    const classListener = onValue(classesRef, (snapshot) => {
+      const classData = snapshot.val();
+      if (classData) {
+        setClassList(classData);
+      }
+    });
+    return () => {
+      classListener();
+    };
+  };
+
+  const fetchCalendarRef = () => {
+    return calendarRef;
   };
 
   const changeClickedEvent = (aEvent) => {
     clickedEvent = aEvent;
     return Promise.resolve();
   };
+
+  const millsecToTime = (ms) => {
+    let h,m,s;
+    h = Math.floor(ms/1000/60/60);
+    m = Math.floor((ms/1000/60/60 - h)*60);
+    s = Math.floor(((ms/1000/60/60 - h)*60 - m)*60);
+    // to get time format 00:00:00
+
+    s < 10 ? s = `0${s}`: s = `${s}`
+    m < 10 ? m = `0${m}`: m = `${m}`
+    h < 10 ? h = `0${h}`: h = `${h}`
+    return h+":"+m+":"+s;
+  }
+
+  const onEventClickCustom = (info) => {
+    console.log("onClick!");
+
+    changeClickedEvent(info.event).then(() => {
+      console.log(clickedEvent)
+      setShowClickEventPopup(true);
+    });
+  };
+
+  // const changeClickedCell = (aCell) => {
+  //   clickedCell = aCell;
+  //   return Promise.resolve();
+  // };
+
+  const dateClick = (info) => {
+    console.log("Date clicked: ", info.dateStr);
+    setClickedCell(info.dateStr);
+    // changeClickedCell(info.dateStr).then(() => {
+
+    setShowAddEventButtonPopup(true);
+    //   console.log("State should now contain the clicked date:", clickedCell);
+    // });
+    
+  }
 
   const onEventRemove = async (changedInfo) => {
     console.log("onRemove!");
@@ -116,14 +168,19 @@ const CalendarPage = () => {
 
   const onEventAdd = async (addInfo) => {
     console.log("onAdd!");
-    console.log(addInfo);
+    console.log(addInfo.event);
     let newEvent = addInfo.event.toPlainObject({ collapseExtendedProps: true });
-    // if (
-    //   recurringEvent.id === newEvent.id &&
-    //   recurringEvent.groupId === newEvent.groupId
-    // ) {
-    //   newEvent = recurringEvent;
-    // }
+    if(addInfo.event.extendedProps.recurEvent)
+    {
+      newEvent = {
+        ...newEvent,
+        startTime: millsecToTime(addInfo.event._def.recurringDef.typeData.startTime['milliseconds']),
+        endTime: millsecToTime(addInfo.event._def.recurringDef.typeData.endTime['milliseconds']),
+        startRecur: addInfo.event._def.recurringDef.typeData.startRecur.toISOString().split('T')[0],
+        endRecur: addInfo.event._def.recurringDef.typeData.endRecur.toISOString().split('T')[0],
+        daysOfWeek: addInfo.event._def.recurringDef.typeData.daysOfWeek,
+      }
+    }
     const updates = {};
     updates[`/events/${newEvent.id}`] = newEvent;
     await update(ref(database), updates).catch((error) => {
@@ -133,15 +190,32 @@ const CalendarPage = () => {
 
   const onEventChange = async (changedInfo) => {
     console.log("onChange!");
+    console.log(changedInfo.event);
     let newEvent = changedInfo.event.toPlainObject({
       collapseExtendedProps: true,
     });
+    if(changedInfo.event.extendedProps.recurEvent)
+    {
+      newEvent = {
+        ...newEvent,
+        startTime: millsecToTime(changedInfo.event._def.recurringDef.typeData.startTime['milliseconds']),
+        endTime: millsecToTime(changedInfo.event._def.recurringDef.typeData.endTime['milliseconds']),
+        startRecur: changedInfo.event._def.recurringDef.typeData.startRecur,
+        endRecur: changedInfo.event._def.recurringDef.typeData.endRecur,
+        daysOfWeek: changedInfo.event._def.recurringDef.typeData.daysOfWeek,
+      }
+    }
+    console.log("new Event: ", newEvent);
     const updates = {};
     updates[`/events/${newEvent.id}`] = newEvent;
     await update(ref(database), updates).catch((error) => {
       console.error("Error adding new item: ", error);
     });
   };
+
+  const setClickedCellfunc = (e) => {
+    setClickedCell(e);
+  }
 
   return (
     <div className="mx-auto flex">
@@ -160,7 +234,7 @@ const CalendarPage = () => {
                 InteractionPlugin,
                 rrulePlugin,
               ]}
-              initialView="timeGridDay"
+              initialView="timeGridWeek"
               titleFormat={{
                 year: "numeric",
                 month: "long",
@@ -189,19 +263,29 @@ const CalendarPage = () => {
               editable
               expandRows
               aspectRatio={0.8}
-              timeZone="UTC"
+              timeZone="local"
               events={eventsInCalendar}
               eventClick={onEventClickCustom}
               eventChange={onEventChange}
               eventRemove={onEventRemove}
               eventAdd={onEventAdd}
               eventColor="#20025a"
+              dateClick={dateClick}
+              
             />
             <ClickEventPopup
               open={showClickEventPopup}
               setOpen={setShowClickEventPopup}
               currEvent={clickedEvent}
               calendarRef={calendarRef}
+            />
+            <AddEventButtonPopup
+              open={showAddEventButtonPopup}
+              setOpen={setShowAddEventButtonPopup}
+              calendarRef={calendarRef}
+              buttonType="scr_small"
+              clickedDateTime={clickedCell}
+              setClickedDateTime={setClickedCellfunc}
             />
           </div>
         </div>

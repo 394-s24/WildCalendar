@@ -54,6 +54,22 @@ const CalendarPage = () => {
       let tmp_list = []; //events_list[]
       if (eventData) {
         Object.entries(eventData).forEach(([_, item]) => {
+          let item_copy = item;
+          if(item.recurEvent)
+          {
+            console.log(item.startRecur)
+            let startrecur1 = new Date(item.startRecur);
+            startrecur1.setDate(startrecur1.getDate() + 1)
+            let startrecur1_string = startrecur1.toISOString().split("T")[0]
+            let endrecur1 = new Date(item.endRecur);
+            endrecur1.setDate(endrecur1.getDate() + 1)
+            let endrecur1_string = endrecur1.toISOString().split("T")[0]
+            item_copy = {
+              ...item,
+              startRecur: startrecur1_string,
+              endRecur: endrecur1_string
+            }
+          }
           tmp_list = [...tmp_list, item];
         });
         setEventsInCalendar(tmp_list);
@@ -152,7 +168,7 @@ const CalendarPage = () => {
 
   const onEventAdd = async (addInfo) => {
     console.log("onAdd!");
-    //console.log(addInfo);
+    console.log(addInfo.event);
     let newEvent = addInfo.event.toPlainObject({ collapseExtendedProps: true });
     if(addInfo.event.extendedProps.recurEvent)
     {
@@ -160,8 +176,8 @@ const CalendarPage = () => {
         ...newEvent,
         startTime: millsecToTime(addInfo.event._def.recurringDef.typeData.startTime['milliseconds']),
         endTime: millsecToTime(addInfo.event._def.recurringDef.typeData.endTime['milliseconds']),
-        startRecur: addInfo.event._def.recurringDef.typeData.startRecur,
-        endRecur: addInfo.event._def.recurringDef.typeData.endRecur,
+        startRecur: addInfo.event._def.recurringDef.typeData.startRecur.toISOString().split('T')[0],
+        endRecur: addInfo.event._def.recurringDef.typeData.endRecur.toISOString().split('T')[0],
         daysOfWeek: addInfo.event._def.recurringDef.typeData.daysOfWeek,
       }
     }

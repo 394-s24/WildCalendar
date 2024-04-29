@@ -54,6 +54,11 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 setMostRecentEvent(calendarRef.current.getApi().getEventById(currEvent.id));
             }
             form.resetFields();
+            if(clickedEdit)
+            {
+                setFormInitialValue();
+            }
+            
             //console.log("useEffect for reset form!")
         }, [open]
     )
@@ -84,6 +89,12 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
             // event1.setExtendedProp("startRecur", fieldsValue["start-recurrence"].format("YYYY-MM-DD"))
             // event1.setExtendedProp("endRecur", fieldsValue["end-recurrence"].format("YYYY-MM-DD"))
             // event1.setExtendedProp("daysOfWeek", daysOfWeek)
+            let startrecur1 = new Date(fieldsValue["start-recurrence"].format("YYYY-MM-DD"));
+            startrecur1.setDate(startrecur1.getDate() + 1)
+            let startrecur1_string = startrecur1.toISOString().split("T")[0]
+            let endrecur1 = new Date(fieldsValue["end-recurrence"].format("YYYY-MM-DD"));
+            endrecur1.setDate(endrecur1.getDate() + 1)
+            let endrecur1_string = endrecur1.toISOString().split("T")[0]
             event1.remove();
             let values = {
                 title: fieldsValue["title"],
@@ -100,8 +111,8 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 description: fieldsValue["description"]
                   ? fieldsValue["description"]
                   : "",
-                startRecur: fieldsValue["start-recurrence"].format("YYYY-MM-DD"),
-                endRecur: fieldsValue["end-recurrence"].format("YYYY-MM-DD"),
+                startRecur: startrecur1_string,
+                endRecur: endrecur1_string,
                 daysOfWeek: fieldsValue["daysOfWeek"].map(
                     (day) => weekdays.indexOf(day)
                 ),
@@ -169,34 +180,42 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
         //setMostRecentEvent(null);;
     };
 
+    const setFormInitialValue = () => {
+        //setting initial value, has to be here bc if the form does not rerender, previous value can remain as initial value
+        if(mostRecentEvent)
+        {
+            if(!mostRecentEvent.extendedProps.recurEvent) {
+                form.setFieldsValue({
+                    'title' : mostRecentEvent.title,
+                  });
+                form.setFieldsValue({'range-picker1': [dayjs(getMostRecentRange()[0]), dayjs(getMostRecentRange()[1])], });
+                form.setFieldsValue({'description': mostRecentEvent.extendedProps.description});
+            } 
+            else{
+                form.setFieldsValue({
+                    'title' : mostRecentEvent.title,
+                  });
+                form.setFieldsValue({'start-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.startRecur)})
+                form.setFieldsValue({'end-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.endRecur),})
+                form.setFieldsValue({'time-picker': [dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.startTime['milliseconds']), 'HH:mm:ss'), dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.endTime['milliseconds']), 'HH:mm:ss')], })
+                form.setFieldsValue({'daysOfWeek': mostRecentEvent._def.recurringDef.typeData.daysOfWeek.map((day) =>
+                        weekdays[day]
+                    ), })
+                form.setFieldsValue({'description': mostRecentEvent.extendedProps.description})
+            }
+        }
+    }
+
     const onClickEditButton = () => {
-        console.log(mostRecentEvent)
-        console.log(currEvent)
+        // console.log(mostRecentEvent)
+        // console.log(currEvent)
         if (calendarRef != null && calendarRef.current != null) {
             setClickedEdit(true);
             setFinishDisabled(true);
         }
         form.resetFields();
         //setting initial value, has to be here bc if the form does not rerender, previous value can remain as initial value
-        if(!mostRecentEvent.extendedProps.recurEvent) {
-            form.setFieldsValue({
-                'title' : mostRecentEvent.title,
-              });
-            form.setFieldsValue({'range-picker1': [dayjs(getMostRecentRange()[0]), dayjs(getMostRecentRange()[1])], });
-            form.setFieldsValue({'description': mostRecentEvent.extendedProps.description});
-        } 
-        else{
-            form.setFieldsValue({
-                'title' : mostRecentEvent.title,
-              });
-            form.setFieldsValue({'start-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.startRecur)})
-            form.setFieldsValue({'end-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.endRecur),})
-            form.setFieldsValue({'time-picker': [dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.startTime['milliseconds']), 'HH:mm:ss'), dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.endTime['milliseconds']), 'HH:mm:ss')], })
-            form.setFieldsValue({'daysOfWeek': mostRecentEvent._def.recurringDef.typeData.daysOfWeek.map((day) =>
-                    weekdays[day]
-                ), })
-            form.setFieldsValue({'description': mostRecentEvent.extendedProps.description})
-        }
+        setFormInitialValue();
     };
 
     const onClickFinishButton = () => {

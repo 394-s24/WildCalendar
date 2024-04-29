@@ -60,6 +60,12 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
     let newId = uuidv4();
     let values = {};
     if (recur) {
+      let startrecur1 = new Date(fieldsValue["start-recurrence"].format("YYYY-MM-DD"));
+      startrecur1.setDate(startrecur1.getDate() + 1)
+      let startrecur1_string = startrecur1.toISOString().split("T")[0]
+      let endrecur1 = new Date(fieldsValue["end-recurrence"].format("YYYY-MM-DD"));
+      endrecur1.setDate(endrecur1.getDate() + 1)
+      let endrecur1_string = endrecur1.toISOString().split("T")[0]
       values = {
         title: fieldsValue["title"],
         startTime: fieldsValue["start-recurrence"]
@@ -75,8 +81,8 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
         description: fieldsValue["description"]
           ? fieldsValue["description"]
           : "",
-        startRecur: fieldsValue["start-recurrence"].format("YYYY-MM-DD"),
-        endRecur: fieldsValue["end-recurrence"].format("YYYY-MM-DD"),
+        startRecur: startrecur1_string,
+        endRecur: endrecur1_string,
         daysOfWeek: daysOfWeek,
         id: newId,
         editable: false,

@@ -9,8 +9,24 @@ import React, { useState, useEffect, useRef } from "react";
 import ClickEventPopup from "../components/ClickEventPopup";
 import { getDatabase, ref, update, push, remove, onValue } from "@firebase/database";
 import Sidebar from "../components/Sidebar";
+import { cs_classes_list } from "@/lib/courseData";
+import AddEventButtonPopup from "../components/AddEventPopup";
+import dayjs from 'dayjs';
+import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-// Calendar Page
+let clickedEvent = {
+  id: "randomlyInitializedEvent",
+  title: "Random Event",
+  start: new Date("9999-03-28T11:00:00"),
+  end: new Date("9999-03-28T12:20:00"),
+  extendedProps: {
+    description: "",
+  },
+};
+
+//let clickedCell = null;
+
 const CalendarPage = () => {
 
   // References

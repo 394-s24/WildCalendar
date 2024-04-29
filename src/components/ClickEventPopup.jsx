@@ -112,9 +112,9 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                 NWUClass: false,
                 recurEvent: true,
             };
-            console.log(values)
+            //console.log(values)
             let event2 = calendarRef.current.getApi().addEvent(values);
-            console.log(event2)
+            //console.log(event2)
             setMostRecentEvent(event2);
         } else {
             event1.setProp("title", fieldsValue["title"])
@@ -165,16 +165,37 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     const onClosingCompletely = () => {
         setOpen(false);
         setClickedEdit(false);
+        form.resetFields();
         //setMostRecentEvent(null);;
     };
 
     const onClickEditButton = () => {
-      form.resetFields();
-      console.log(mostRecentEvent)
-      if (calendarRef != null && calendarRef.current != null) {
-        setClickedEdit(true);
-        setFinishDisabled(true);
-      }
+        console.log(mostRecentEvent)
+        console.log(currEvent)
+        if (calendarRef != null && calendarRef.current != null) {
+            setClickedEdit(true);
+            setFinishDisabled(true);
+        }
+        form.resetFields();
+        if(!mostRecentEvent.extendedProps.recurEvent) {
+            form.setFieldsValue({
+                'title' : mostRecentEvent.title,
+              });
+            form.setFieldsValue({'range-picker1': [dayjs(getMostRecentRange()[0]), dayjs(getMostRecentRange()[1])], });
+            form.setFieldsValue({'description': mostRecentEvent.extendedProps.description});
+        } 
+        else{
+            form.setFieldsValue({
+                'title' : mostRecentEvent.title,
+              });
+            form.setFieldsValue({'start-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.startRecur)})
+            form.setFieldsValue({'end-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.endRecur),})
+            form.setFieldsValue({'time-picker': [dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.startTime['milliseconds']), 'HH:mm:ss'), dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.endTime['milliseconds']), 'HH:mm:ss')], })
+            form.setFieldsValue({'daysOfWeek': mostRecentEvent._def.recurringDef.typeData.daysOfWeek.map((day) =>
+                    weekdays[day]
+                ), })
+            form.setFieldsValue({'description': mostRecentEvent.extendedProps.description})
+        }
     };
 
     const onClickFinishButton = () => {
@@ -237,7 +258,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
 
     return (
         <Modal
-            title={mostRecentEvent != null ? mostRecentEvent.title : currEvent.title}
+            title={mostRecentEvent != null ? mostRecentEvent.title : ""}
             open={open}
             onOk={handleOk}
             //confirmLoading={confirmLoading}
@@ -309,22 +330,22 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
                             //   'date-picker': clickedDateTime ? clickedDateTime : undefined,
                             // }}
                             onValuesChange={onFormValueChange}
-                            initialValues={
-                                !mostRecentEvent.extendedProps.recurEvent ? {
-                                    'title' : mostRecentEvent.title,
-                                    'range-picker1': [dayjs(getMostRecentRange()[0]), dayjs(getMostRecentRange()[1])],
-                                    'description': mostRecentEvent.extendedProps.description
-                                } : {
-                                    'title' : mostRecentEvent.title,
-                                    'start-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.startRecur),
-                                    'end-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.endRecur),
-                                    'time-picker': [dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.startTime['milliseconds']), 'HH:mm:ss'), dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.endTime['milliseconds']), 'HH:mm:ss')],
-                                    'daysOfWeek': mostRecentEvent._def.recurringDef.typeData.daysOfWeek.map((day) =>
-                                            weekdays[day]
-                                        ),
-                                    'description': mostRecentEvent.extendedProps.description
-                                }
-                            }
+                            // initialValues={
+                            //     !mostRecentEvent.extendedProps.recurEvent ? {
+                            //         'title' : mostRecentEvent.title,
+                            //         'range-picker1': [dayjs(getMostRecentRange()[0]), dayjs(getMostRecentRange()[1])],
+                            //         'description': mostRecentEvent.extendedProps.description
+                            //     } : {
+                            //         'title' : mostRecentEvent.title,
+                            //         'start-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.startRecur),
+                            //         'end-recurrence': dayjs(mostRecentEvent._def.recurringDef.typeData.endRecur),
+                            //         'time-picker': [dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.startTime['milliseconds']), 'HH:mm:ss'), dayjs(millsecToTime(mostRecentEvent._def.recurringDef.typeData.endTime['milliseconds']), 'HH:mm:ss')],
+                            //         'daysOfWeek': mostRecentEvent._def.recurringDef.typeData.daysOfWeek.map((day) =>
+                            //                 weekdays[day]
+                            //             ),
+                            //         'description': mostRecentEvent.extendedProps.description
+                            //     }
+                            // }
                         >
                             <Form.Item
                                 label="Title"

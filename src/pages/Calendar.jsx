@@ -27,7 +27,8 @@ let clickedEvent = {
 
 const CalendarPage = () => {
   const calendarRef = React.useRef(null);
-  const [eventsInCalendar, setEventsInCalendar] = useState(cs_classes_list.slice(1,4));
+  const [eventsInCalendar, setEventsInCalendar] = useState([]); //cs_classes_list.slice(1,4)
+  const [classList, setClassList] = useState([]);
   const [showClickEventPopup, setShowClickEventPopup] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -41,45 +42,45 @@ const CalendarPage = () => {
   }, []);
 
   useEffect(() => {
-    // fetEventsFromDB();
-    // fetClassesFromDB();
+    fetEventsFromDB();
+    fetClassesFromDB();
     console.log("useEffect called!");
   }, []);
 
-  // const fetEventsFromDB = () => {
-  //   const eventsRef = ref(database, "events");
-  //   const eventListener = onValue(eventsRef, (snapshot) => {
-  //     const eventData = snapshot.val();
-  //     let tmp_list = []; //events_list[]
-  //     if (eventData) {
-  //       Object.entries(eventData).forEach(([_, item]) => {
-  //         tmp_list = [...tmp_list, item];
-  //       });
-  //       setEventsInCalendar(tmp_list);
-  //     }
-  //   });
+  const fetEventsFromDB = () => {
+    const eventsRef = ref(database, "events");
+    const eventListener = onValue(eventsRef, (snapshot) => {
+      const eventData = snapshot.val();
+      let tmp_list = []; //events_list[]
+      if (eventData) {
+        Object.entries(eventData).forEach(([_, item]) => {
+          tmp_list = [...tmp_list, item];
+        });
+        setEventsInCalendar(tmp_list);
+      }
+    });
 
-  //   return () => {
-  //     eventListener();
-  //   };
-  // };
+    return () => {
+      eventListener();
+    };
+  };
 
-  // const fetClassesFromDB = () => {
-  //   const classesRef = ref(database, "NWUClass");
-  //   const classListener = onValue(classesRef, (snapshot) => {
-  //     const classData = snapshot.val();
-  //     if (classData) {
-  //       setClassList(classData);
-  //     }
-  //   });
-  //   return () => {
-  //     classListener();
-  //   };
-  // };
+  const fetClassesFromDB = () => {
+    const classesRef = ref(database, "NWUClass");
+    const classListener = onValue(classesRef, (snapshot) => {
+      const classData = snapshot.val();
+      if (classData) {
+        setClassList(classData);
+      }
+    });
+    return () => {
+      classListener();
+    };
+  };
 
-  // const fetchCalendarRef = () => {
-  //   return calendarRef;
-  // };
+  const fetchCalendarRef = () => {
+    return calendarRef;
+  };
 
   const changeClickedEvent = (aEvent) => {
     clickedEvent = aEvent;
@@ -153,12 +154,17 @@ const CalendarPage = () => {
     console.log("onAdd!");
     //console.log(addInfo);
     let newEvent = addInfo.event.toPlainObject({ collapseExtendedProps: true });
-    // if (
-    //   recurringEvent.id === newEvent.id &&
-    //   recurringEvent.groupId === newEvent.groupId
-    // ) {
-    //   newEvent = recurringEvent;
-    // }
+    if(addInfo.event.extendedProps.recurEvent)
+    {
+      newEvent = {
+        ...newEvent,
+        startTime: millsecToTime(addInfo.event._def.recurringDef.typeData.startTime['milliseconds']),
+        endTime: millsecToTime(addInfo.event._def.recurringDef.typeData.endTime['milliseconds']),
+        startRecur: addInfo.event._def.recurringDef.typeData.startRecur,
+        endRecur: addInfo.event._def.recurringDef.typeData.endRecur,
+        daysOfWeek: addInfo.event._def.recurringDef.typeData.daysOfWeek,
+      }
+    }
     const updates = {};
     updates[`/events/${newEvent.id}`] = newEvent;
     await update(ref(database), updates).catch((error) => {
@@ -168,9 +174,21 @@ const CalendarPage = () => {
 
   const onEventChange = async (changedInfo) => {
     console.log("onChange!");
+    console.log(changedInfo.event);
     let newEvent = changedInfo.event.toPlainObject({
       collapseExtendedProps: true,
     });
+    if(changedInfo.event.extendedProps.recurEvent)
+    {
+      newEvent = {
+        ...newEvent,
+        startTime: millsecToTime(changedInfo.event._def.recurringDef.typeData.startTime['milliseconds']),
+        endTime: millsecToTime(changedInfo.event._def.recurringDef.typeData.endTime['milliseconds']),
+        startRecur: changedInfo.event._def.recurringDef.typeData.startRecur,
+        endRecur: changedInfo.event._def.recurringDef.typeData.endRecur,
+        daysOfWeek: changedInfo.event._def.recurringDef.typeData.daysOfWeek,
+      }
+    }
     console.log("new Event: ", newEvent);
     const updates = {};
     updates[`/events/${newEvent.id}`] = newEvent;

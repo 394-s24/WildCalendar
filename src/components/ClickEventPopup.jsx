@@ -177,6 +177,7 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
             setFinishDisabled(true);
         }
         form.resetFields();
+        //setting initial value, has to be here bc if the form does not rerender, previous value can remain as initial value
         if(!mostRecentEvent.extendedProps.recurEvent) {
             form.setFieldsValue({
                 'title' : mostRecentEvent.title,

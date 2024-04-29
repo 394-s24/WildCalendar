@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { AutoComplete, message } from "antd";
 import { getDatabase, ref, onValue, push, set } from "firebase/database";
 
+// Class Search
 const ClassSearch = ({ calendarRef }) => {
 
   // Search options, Selected class, Full class list
@@ -69,7 +70,6 @@ const ClassSearch = ({ calendarRef }) => {
       editable: false,
       NWUClass: true,
       description: ''
-      
     };
   };
 
@@ -81,23 +81,11 @@ const ClassSearch = ({ calendarRef }) => {
 
     if (!event1) {
       const formattedClassEvent = buildClassEvent(selectedClass);
-
-      // const newAutoIdObject = push(eventRef, formattedClassEvent);
-      // const newAutoId = newAutoIdObject.key;
-
       const newEventRef = push(eventRef);
       const newAutoId = newEventRef.key;
-
       formattedClassEvent.firebaseId = newAutoId;
-
       set(newEventRef, formattedClassEvent);
-
-      console.log('new auto id', newAutoId)
-      
-      
-      // calendarRef.current.getApi().addEvent(formattedClassEvent);
       message.success("Class added to calendar.");
-      console.log('formatted class event', formattedClassEvent);
     } 
     else {
       message.error("Course already added.")
@@ -140,6 +128,7 @@ const ClassSearch = ({ calendarRef }) => {
     </>
   );
 };
+
 
 // Export
 export default ClassSearch;

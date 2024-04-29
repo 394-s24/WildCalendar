@@ -7,25 +7,8 @@ import InteractionPlugin from "@fullcalendar/interaction";
 // Other Imports
 import React, { useState, useEffect, useRef } from "react";
 import ClickEventPopup from "../components/ClickEventPopup";
-import { database } from "../firebase";
 import { getDatabase, ref, update, push, remove, onValue } from "@firebase/database";
 import Sidebar from "../components/Sidebar";
-import { cs_classes_list } from "@/lib/courseData";
-import AddEventButtonPopup from "../components/AddEventPopup";
-import dayjs from 'dayjs';
-
-let clickedEvent = {
-  id: "randomlyInitializedEvent",
-  title: "Random Event",
-  start: new Date("9999-03-28T11:00:00"),
-  end: new Date("9999-03-28T12:20:00"),
-  extendedProps: {
-    description: "",
-  },
-};
-
-//let clickedCell = null;
-
 
 // Calendar Page
 const CalendarPage = () => {
@@ -131,7 +114,6 @@ const CalendarPage = () => {
               eventClick={onEventClick}
               // eventChange={onEventChange}
               eventColor="#20025a"
-              dateClick={dateClick}
               
             />
             <ClickEventPopup
@@ -139,14 +121,6 @@ const CalendarPage = () => {
               setOpen={setShowClickEventPopup}
               currEvent={clickedEvent}
               calendarRef={calendarRef}
-            />
-            <AddEventButtonPopup
-              open={showAddEventButtonPopup}
-              setOpen={setShowAddEventButtonPopup}
-              calendarRef={calendarRef}
-              buttonType="scr_small"
-              clickedDateTime={clickedCell}
-              setClickedDateTime={setClickedCellfunc}
             />
           </div>
         </div>

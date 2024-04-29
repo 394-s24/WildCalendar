@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Form, DatePicker, Input, TimePicker, Checkbox } from "antd";
+import React, { useState } from "react";
+import { Modal, Form, DatePicker, Input, TimePicker, Checkbox, message } from "antd";
 import { Button } from "@/components/Button";
-import { PlusOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
-import moment from 'moment'
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import { getDatabase, ref, push, set } from "firebase/database";
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
-
+const dateFormat = "YYYY-MM-DD";
 const weekdays = [
   "Sunday",
   "Monday",
@@ -18,68 +17,118 @@ const weekdays = [
   "Saturday",
 ];
 
-const { RangePicker } = DatePicker;
-
-const rangeConfig = {
-    rules: [
-        {
-            type: 'array',
-            required: true,
-            message: 'Please enter a time!',
-        },
-    ],
-}
-
-const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDateTime }) => {
+const AddEventButtonPopup = ({
+  open,
+  setOpen,
+  calendarRef,
+  buttonType,
+  clickedDateTime,
+}) => {
   const [form] = Form.useForm();
   const [recur, setRecur] = useState(false);
   const [daysOfWeek, setDaysOfWeek] = useState([]);
-  
 
   const showModal = () => {
     setOpen(true);
     setRecur(false);
-    
   };
 
   const handleCancel = () => {
-    form.resetFields();
+    onClose();
     setOpen(false);
   };
 
-  const onClosingCompletely = () => {
+  const onClose = () => {
     form.resetFields();
   };
-
-  const onModalOpenChange = () => {
-    form.resetFields();
-    //console.log(clickedDateTime, open);
-  }
 
   const handleOk = (fieldsValue) => {
-    let newId = uuid();
-    let values = {
-      title: fieldsValue["title"],
-      start: fieldsValue["date-picker"]
-        .clone()
-        .hour(fieldsValue["time-picker"][0].hour())
-        .minute(fieldsValue["time-picker"][0].minute())
-        .format(dateTimeFormat),
-      end: fieldsValue["date-picker"]
-        .clone()
-        .hour(fieldsValue["time-picker"][1].hour())
-        .minute(fieldsValue["time-picker"][1].minute())
-        .format(dateTimeFormat),
-      description: fieldsValue["description"] ? fieldsValue["description"] : "",
-      id: newId,
-      groupId: "",
-      NWUClass: false,
-    };
+    let newId = uuidv4();
+    let values = {};
+    const db = getDatabase();
+    const eventRef = ref(db, "events");
+    console.log(daysOfWeek)
+
+    if (recur) {
+      const {
+        title,
+        description,
+        startrecur,
+        endrecur,
+        timePickerRec,
+      } = fieldsValue;
+      let startRecStr = new Date(
+        startrecur
+          .format(dateFormat)
+      )
+      let endRecStr = new Date(
+        endrecur
+          .format(dateFormat)
+      )
+      values = {
+        title: title,
+        startTime: startrecur
+          .clone()
+          .hour(timePickerRec[0].hour())
+          .minute(timePickerRec[0].minute())
+          .format("HH:mm"),
+        endTime: endrecur
+          .clone()
+          .hour(timePickerRec[1].hour())
+          .minute(timePickerRec[1].minute())
+          .format("HH:mm"),
+        description: description
+          ? description
+          : "",
+        start: startRecStr,
+        end: endRecStr,
+        daysOfWeek: daysOfWeek,
+        id: newId,
+        editable: true,
+        groupId: title,
+        NWUClass: false,
+        recurEvent: true,
+      };
+    } 
+    else {
+      const {
+        title,
+        description,
+        datenonrecur,
+        timePicker,
+      } = fieldsValue;
+      values = {
+        title: title,
+        start: datenonrecur
+          .hour(timePicker[0].hour())
+          .minute(timePicker[0].minute())
+          .format(dateTimeFormat),
+        end: datenonrecur
+          .hour(timePicker[1].hour())
+          .minute(timePicker[1].minute())
+          .format(dateTimeFormat),
+        description: description
+          ? description
+          : "",
+        id: newId,
+        groupId: title,
+        NWUClass: false,
+        recurEvent: false,
+        editable: true,
+      };
+    }
+
+    console.log(values);
     setOpen(false);
     calendarRef.current.getApi().addEvent(values);
-    
-  };
 
+    const newEventRef = push(eventRef);
+    const newAutoId = newEventRef.key;
+    values.firebaseId = newAutoId;
+    set(newEventRef, values);
+    message.success("Event added to calendar.");
+  };
+    
   return (
     <>
       {buttonType === "scr_small" ? (
@@ -99,23 +148,22 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
           form.validateFields().then(form.submit);
         }}
         onCancel={handleCancel}
-        afterOpenChange={onModalOpenChange}
-        afterClose={onClosingCompletely}
+        afterOpenChange={onClose}
+        afterClose={onClose}
       >
         <Form
           id="CreateEventForm"
           form={form}
           name="time_related_controls"
           onFinish={handleOk}
-          // initialValues={{
-          //   // 'date-picker': clickedDateTime ? clickedDateTime : undefined,
-          //   'date-picker': clickedDateTime ? clickedDateTime : undefined,
-          // }}
           initialValues={{
-            'range-picker1': clickedDateTime ? [dayjs(clickedDateTime), null] : [],
-            'start-recurrence' : clickedDateTime ? dayjs(clickedDateTime) : null,
+            "range-picker1": clickedDateTime
+              ? [dayjs(clickedDateTime), null]
+              : [],
+            startrecur: clickedDateTime ? dayjs(clickedDateTime) : null,
           }}
         >
+          {/* EVENT TITLE */}
           <Form.Item
             label="Title"
             name="title"
@@ -129,6 +177,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
             <Input />
           </Form.Item>
 
+          {/* RECURRING BOOL */}
           <Form.Item name="isRecurring">
             <Checkbox
               checked={recur}
@@ -141,59 +190,33 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
             </Checkbox>
           </Form.Item>
 
+          {/* NONRECURRING DATE */}
           {!recur && (
-            <Form.Item name="range-picker1" label="Start and End" rules={[
-              {
-                required: true,
-                message: "Start time and end time of the event must not be empty!",
-              },
-            ]}>
-                <RangePicker {...rangeConfig} showTime format="YYYY-MM-DD HH:mm"
-                    />
-            </Form.Item>
-          )}
-
-          {/* {!recur && (
-            <Form.Item name="time-picker" label="Time">
-              <TimePicker.RangePicker
-                format="HH:mm A"
-                minuteStep={5}
-                hourStep={1}
-                hideDisabledOptions
-              />
-            </Form.Item>
-          )} */}
-
-          {recur && (
-            <Form.Item name="start-recurrence" label="Start Date" rules={[
-              {
-                required: true,
-                message: "Start date of the recurring event must not be empty!",
-              },
-            ]}>
+            <Form.Item
+              name="datenonrecur"
+              label="Date"
+              rules={[
+                {
+                  required: true,
+                  message:
+                    "Start date of the recurring event must not be empty!",
+                },
+              ]}
+            >
               <DatePicker />
             </Form.Item>
           )}
 
-          {recur && (
-            <Form.Item name="end-recurrence" label="End Date" rules={[
-              {
-                required: true,
-                message: "End date of the recurring event must not be empty!",
-              },
-            ]}>
-              <DatePicker />
-            </Form.Item>
-          )}
-
-          {recur && (
-            <Form.Item 
-              name="time-picker" 
+          {/* NONRECURRING TIME */}
+          {!recur && (
+            <Form.Item
+              name="timePicker"
               label="Time"
               rules={[
                 {
                   required: true,
-                  message: "Start time and end time of the recurring event must not be empty!",
+                  message:
+                    "Start date of the recurring event must not be empty!",
                 },
               ]}
             >
@@ -206,15 +229,71 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
             </Form.Item>
           )}
 
+          {/* RECURRING START DATE */}
           {recur && (
-            <Form.Item label="On Days:" name="daysOfWeek">
+            <Form.Item
+              name="startrecur"
+              label="Start Date"
+              rules={[
+                {
+                  required: true,
+                  message:
+                    "Start date of the recurring event must not be empty!",
+                },
+              ]}
+            >
+              <DatePicker />
+            </Form.Item>
+          )}
+
+          {/* RECURRING END DATE */}
+          {recur && (
+            <Form.Item
+              name="endrecur"
+              label="End Date"
+              rules={[
+                {
+                  required: true,
+                  message: "End date of the recurring event must not be empty!",
+                },
+              ]}
+            >
+              <DatePicker />
+            </Form.Item>
+          )}
+
+          {/* RECURRING TIME */}
+          {recur && (
+            <Form.Item
+              name="timePickerRec"
+              label="Time"
+              rules={[
+                {
+                  required: true,
+                  message:
+                    "Start time and end time of the recurring event must not be empty!",
+                },
+              ]}
+            >
+              <TimePicker.RangePicker
+                format="HH:mm A"
+                minuteStep={5}
+                hourStep={1}
+                hideDisabledOptions
+              />
+            </Form.Item>
+          )}
+
+          {/* RECURRING DAYS OF WEEK */}
+          {recur && (
+            <Form.Item label="On Days:" name="dow">
               <Checkbox.Group
                 style={{ width: "100%" }}
                 onChange={(checkedValues) => {
-                  const daysOfWeek = checkedValues.map((day) =>
+                  const dow = checkedValues.map((day) =>
                     weekdays.indexOf(day)
                   );
-                  setDaysOfWeek(daysOfWeek);
+                  setDaysOfWeek(dow);
                 }}
               >
                 {weekdays.map((weekday) => (
@@ -226,6 +305,7 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType, clickedDa
             </Form.Item>
           )}
 
+          {/* DESCRIPTION */}
           <Form.Item label="Description" name="description">
             <Input />
           </Form.Item>

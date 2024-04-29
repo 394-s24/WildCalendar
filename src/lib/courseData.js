@@ -8,7 +8,9 @@ export const cs_classes_list = [
     daysOfWeek: [1, 3, 5],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "100",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -21,7 +23,9 @@ export const cs_classes_list = [
     daysOfWeek: [1, 3, 5],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "101",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -34,7 +38,9 @@ export const cs_classes_list = [
     daysOfWeek: [1, 3, 5],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "102",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -47,7 +53,9 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "103",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -60,7 +68,9 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "104",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -73,7 +83,9 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "105",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -86,7 +98,9 @@ export const cs_classes_list = [
     daysOfWeek: [2, 4],
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
+    groupId: "106",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -100,6 +114,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -113,6 +128,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -126,6 +142,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -139,6 +156,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -152,6 +170,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -165,6 +184,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -178,6 +198,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -187,6 +208,9 @@ export const cs_classes_list = [
     subject: 'COMP_SCI',
     startTime: '13:00',
     endTime: '14:30',
+    editable: false,
+    recurEvent: true,
+    NWUClass: true,
     daysOfWeek: [2, 4]
   },
   {
@@ -199,6 +223,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -212,6 +237,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   },
@@ -225,6 +251,7 @@ export const cs_classes_list = [
     startRecur: "2024-03-01",
     endRecur: "2024-06-01",
     editable: false,
+    recurEvent: true,
     NWUClass: true,
     description: "Sample Description."
   }

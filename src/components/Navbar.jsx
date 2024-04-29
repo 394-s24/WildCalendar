@@ -74,7 +74,7 @@ function Navbar() {
 
   return (
     <nav
-      className={`fixed w-full bg-white border-b z-50 px-6 sm:px-8 ${
+      className={`fixed w-screen bg-white border-b z-50 px-6 sm:px-8 ${
         scrolled && "border-b-2"
       } ${scrolled && !isMobileMenuOpen && "py-2"} ${
         !scrolled && isMobileMenuOpen ? "" : "transition-colors duration-300"

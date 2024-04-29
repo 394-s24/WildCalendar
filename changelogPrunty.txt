@@ -1,0 +1,10 @@
+
+- Calendar events are now sourced / updated exclusively from Firebase, rather than handled/stored client-side
+  - 'Single source of truth' for data
+  - Events persist on refresh
+
+- Full course list data integrated with search bar
+
+- Set Montserrat as global typeface for consistency
+
+- Update Favicon to WC Logo

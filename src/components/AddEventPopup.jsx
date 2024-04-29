@@ -26,6 +26,10 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
   };
 
   const handleOk = (fieldsValue) => {
+    const db = getDatabase();
+    const eventRef = ref(db, "events");
+    const newAutoIdObject = push(eventRef, selectedClass);  // Add the class to the 'events' section in the database
+    const newAutoId = newAutoIdObject.key;
     let newId = uuid();
     let values = {
       title: fieldsValue["title"],
@@ -43,12 +47,14 @@ const AddEventButtonPopup = ({ open, setOpen, calendarRef, buttonType }) => {
       id: newId,
       groupId: "",
       NWUClass: false,
+      firebaseId: newAutoId,
     };
     setOpen(false);
     console.log(calendarRef);
     console.log('Vals obj here')
     console.log(values);
     calendarRef.current.getApi().addEvent(values);
+    
   };
 
   return (

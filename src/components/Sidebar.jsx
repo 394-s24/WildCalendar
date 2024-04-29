@@ -8,34 +8,21 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import React, { useState, useEffect, useRef } from "react";
-import { database } from "../firebase";
-import { ref, update, push, remove, onValue } from "@firebase/database";
-import { message } from "antd";
-import { Modal, Form, DatePicker, Input } from "antd";
+import React, { useState } from "react";
+import { Modal } from "antd";
 
 const Sidebar = ({ calendarRef }) => {
   const [searchMenuOpen, setSearchMenuOpen] = useState(false);
   const [eventMenuOpen, setEventMenuOpen] = useState(false);
   const [showAddEventButtonPopup, setShowAddEventButtonPopup] = useState(false);
+
   const handleCancel = () => {
     setSearchMenuOpen(false);
   };
+
   const handleCancelEvent = () => {
     setEventMenuOpen(false);
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
 
   return (
     <nav

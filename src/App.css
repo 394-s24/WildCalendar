@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* NAV COMPONENT */
 
 .fc-toolbar-chunk {
   margin-top: 1em;
@@ -9,6 +8,10 @@
 
 .fc-header-toolbar .fc-center {
   display: block !important;
+}
+
+* {
+  font-family: 'Montserrat', sans-serif !important;
 }
 
 .grid-cols-sidebar-main {
@@ -19,7 +22,6 @@
   .fc-header-toolbar {
     flex-wrap: wrap;
   }
-
   .fc-toolbar-chunk {
     flex: 1 0 100%;
     display: flex;
@@ -35,7 +37,6 @@ h2 {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-
 }
 
 .menu-button {
@@ -45,7 +46,6 @@ h2 {
   border: none;
   cursor: pointer;
 }
-
 
 .menu-button-left {
   align-self: flex-start;
@@ -66,16 +66,12 @@ h2 {
   justify-self: flex-end;
 }
 
-
 .menu {
   background-color: blue;
   border: 1px solid #fff;
   display: flex;
   flex-direction: column;
 }
-
-
-
 
 .menu a {
   color: #fff;

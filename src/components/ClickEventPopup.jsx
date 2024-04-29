@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Divider, DatePicker, Row, Col, Input, Popconfirm } from 'antd';
+import { Button, Modal, Divider, DatePicker, Row, Input, Popconfirm } from 'antd';
 import dayjs from 'dayjs';
-
-const { RangePicker } = DatePicker;
-
-const rangeConfig = {
-    rules: [
-        {
-            type: 'array',
-            required: true,
-            message: 'Please enter a time!',
-        },
-    ],
-}
+import { getDatabase, ref, update, push, remove, onValue } from "@firebase/database";
 
 const convertDateToStr = (aDate) => {
     let str1 = aDate.toISOString();
@@ -20,11 +9,9 @@ const convertDateToStr = (aDate) => {
     let str2 = tmp_list[0]+" "+tmp_list[1];
     return (str1.length > 0 ? str2 : "");
   }
-
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 
 const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
-
     const [rangePickerBuffer, setRangePickerBuffer] = useState([]);
     const [rangePickerStatus, setRangePickerStatus] = useState("")
     const [inputBoxModDescBuffer, setInputBoxModDescBuffer] = useState("");
@@ -56,6 +43,12 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     const onClickDelete = () => {
         if (calendarRef != null && calendarRef.current != null) {
           let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
+          const removalId = event1.extendedProps.firebaseId;
+          console.log('event1', event1)
+          console.log('removal id', removalId)
+          const db = getDatabase();
+          const eventRef = ref(db, `events/${removalId}`)
+          remove(eventRef);
           event1.remove();
           setOpen(false);
         }
@@ -116,10 +109,9 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
 
     return (
         <Modal
-            title={currEvent.title}
+            title={currEvent.groupId}
             open={open}
             onOk={handleOk}
-            //confirmLoading={confirmLoading}
             onCancel={handleCancel}
             afterOpenChange={onModalOpenChange}
             afterClose={onClosingCompletely}
@@ -151,7 +143,6 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
         >
             {false ? (
                     <Divider>
-                        {/*Please don't delete this divider!*/}
                         {clickedEdit}
                     </Divider>
                 ) : (
@@ -213,3 +204,43 @@ const ClickEventPopup = ({open, setOpen, currEvent, calendarRef}) => {
     );
 };
 export default ClickEventPopup;
+
+
+  // // Handle event delete
+  // const onEventRemove = async (info) => {
+  //   console.log("onRemove!");
+  //   let newEvent = info.event.toPlainObject({
+  //     collapseExtendedProps: true,
+  //   });
+  //   await remove(ref(database, `events/${newEvent.id}`)).catch((error) => {
+  //     console.error("Error removing new item: ", error);
+  //   });
+  //   calendarEvents.map(async (item) => {
+  //     if (
+  //       newEvent.groupId !== "" &&
+  //       item.groupId == newEvent.groupId &&
+  //       item.id !== newEvent.id
+  //     ) {
+  //       let event1 = calendarRef.current.getApi().getEventById(item.id);
+  //       if (event1) {
+  //         event1.remove();
+  //         await remove(ref(database, `events/${item.id}`)).catch((error) => {
+  //           console.error("Error removing new item: ", error);
+  //         });
+  //       }
+  //     }
+  //   });
+  // };
+
+  // // Handle event change
+  // const onEventChange = async (info) => {
+  //   console.log("onChange!");
+  //   let newEvent = info.event.toPlainObject({
+  //     collapseExtendedProps: true,
+  //   });
+  //   const updates = {};
+  //   updates[`/events/${newEvent.id}`] = newEvent;
+  //   await update(ref(database), updates).catch((error) => {
+  //     console.error("Error adding new item: ", error);
+  //   });
+  // };

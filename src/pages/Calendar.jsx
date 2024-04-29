@@ -12,6 +12,8 @@ import Sidebar from "../components/Sidebar";
 import { cs_classes_list } from "@/lib/courseData";
 import AddEventButtonPopup from "../components/AddEventPopup";
 import dayjs from 'dayjs';
+import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 let clickedEvent = {
   id: "randomlyInitializedEvent",
@@ -34,6 +36,21 @@ const CalendarPage = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [clickedCell, setClickedCell] = useState(null);
   const [showAddEventButtonPopup, setShowAddEventButtonPopup] = useState(false);
+
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  // Authentication check and redirection
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      if (!user) {
+        // User is not signed in; redirect them to the login page
+        navigate("/login");
+      }
+    });
+
+    return () => unsubscribe(); // Clean up the subscription
+  }, [navigate]);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -138,7 +155,7 @@ const CalendarPage = () => {
     setShowAddEventButtonPopup(true);
     //   console.log("State should now contain the clicked date:", clickedCell);
     // });
-    
+
   }
 
   const onEventRemove = async (changedInfo) => {
@@ -271,7 +288,7 @@ const CalendarPage = () => {
               eventAdd={onEventAdd}
               eventColor="#20025a"
               dateClick={dateClick}
-              
+
             />
             <ClickEventPopup
               open={showClickEventPopup}

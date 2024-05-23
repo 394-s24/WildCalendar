@@ -3,7 +3,7 @@ import TodoItem from '../components/TodoItem';
 import { database } from '../firebase';
 import { ref, onValue, push, update } from '@firebase/database';
 import { Button, Modal } from 'antd';
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const AddSectionBtn = ({ onClick, isCreateCatModalOpen }) => {
@@ -19,20 +19,20 @@ const AddSectionBtn = ({ onClick, isCreateCatModalOpen }) => {
 }
 
 const TodoList = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const auth = getAuth();
 
   // Authentication check and redirection
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      if (!user) {
-        // User is not signed in; redirect them to the login page
-        navigate("/login");
-      }
-    });
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, user => {
+  //     if (!user) {
+  //       // User is not signed in; redirect them to the login page
+  //       navigate("/login");
+  //     }
+  //   });
 
-    return () => unsubscribe(); // Clean up the subscription
-  }, [navigate]);
+  //   return () => unsubscribe(); // Clean up the subscription
+  // }, [navigate]);
 
   const [events, setEvents] = useState([]);
   const [todos, setTodos] = useState({});

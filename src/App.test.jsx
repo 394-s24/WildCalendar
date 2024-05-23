@@ -1,6 +1,7 @@
 import {describe, expect, test} from 'vitest';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import App from './App';
+import Todo from './pages/Todo';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -26,10 +27,19 @@ describe('calendar tests', () => {
     expect(screen.getAllByText('Calendar')[0]).toBeDefined();
   });
 
-  test('navigates to about page', () => {
+  test('navigates to about page', async () => {
     render(<App />);
     fireEvent.click(screen.getByText('About'));
     expect(screen.getAllByText('About')[0]).toBeDefined();
   });
+
+  test('adds a todo', async () => {
+    render(<Todo />);
+    await sleep(1000);
+    fireEvent.click(screen.getAllByText('Add')[0]);
+
+    await sleep(1000);
+    expect(screen.getAllByText('To-do Item')[0]).toBeDefined()
+  })
 
 });

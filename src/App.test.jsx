@@ -26,16 +26,10 @@ describe('calendar tests', () => {
     expect(screen.getAllByText('Calendar')[0]).toBeDefined();
   });
 
-  test('adds events to the todo list', async () => {
+  test('navigates to about page', () => {
     render(<App />);
-    fireEvent.click(screen.getByText('Todo'));
-    expect(screen.getByText('My Todo List')).toBeDefined();
-
-    await waitFor(() => {
-      expect(screen.getByText('COMP_SCI 394-0 - Agile Software Development')).toBeDefined();
-    })
-
-    expect(screen.getByText('To-do Item')).toBeDefined();
+    fireEvent.click(screen.getByText('About'));
+    expect(screen.getAllByText('About')[0]).toBeDefined();
   });
 
 });

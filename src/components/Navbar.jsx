@@ -12,12 +12,13 @@ import {
 import Logo from "@/assets/CalendarIcon.png";
 import { Button } from "@/components/Button";
 import { Link, useLocation } from "react-router-dom";
-import { getAuth, onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth";
 
 const ButtonLink = ({ href, children }) => {
 
   const location = useLocation();
   const isActive = location.pathname === href;
+
+  console.log(location.pathname);
 
   return (
     <Link
@@ -29,7 +30,7 @@ const ButtonLink = ({ href, children }) => {
   )
 };
 
-const NavLink = ({ href, className, children }) => (
+const NavLink = ({ href, className, children, setIsMobileMenuOpen }) => (
   <Link
     to={href}
     className={`flex justify-center items-center hover:opacity-90 transition-all duration-300 w-full ${className}`}
@@ -45,9 +46,6 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [fullName, setFullName] = useState("A");
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -76,31 +74,9 @@ function Navbar() {
     };
   }, []);
 
-  const auth = getAuth();
-
-  const handleSignOut = () => {
-    signOut(auth).then(() => {
-      console.log("User signed out successfully");
-      // Additional logic after signing out (e.g., redirecting to a login page)
-    }).catch((error) => {
-      console.error("Error signing out: ", error);
-    });
-  };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setLoggedIn(true);
-        setFullName(user.displayName);
-      } else {
-        setLoggedIn(false);
-      }
-    })
-  });
-
   return (
     <nav
-      className={`fixed w-screen bg-white border-b z-50 px-6 sm:px-8 ${
+      className={`fixed w-full bg-white border-b z-50 px-6 sm:px-8 ${
         scrolled && "border-b-2"
       } ${scrolled && !isMobileMenuOpen && "py-2"} ${
         !scrolled && isMobileMenuOpen ? "" : "transition-colors duration-300"
@@ -132,59 +108,47 @@ function Navbar() {
         </button>
 
         <div className="flex sm:gap-6 order-3">
-
-          {loggedIn ? (
-            <>
-              <div className="flex gap-4 justify-evenly">
-                <ButtonLink href="/todo">
-                  Todo
-                </ButtonLink>
-                <ButtonLink href="/calendar">
-                  Calendar
-                </ButtonLink>
-              </div>
-
-
-              <Box sx={{ flexGrow: 0 }} className="">
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt={fullName} src="/static/images/avatar/2.jpg" />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                {userMenu.map((setting) => (
-                  <MenuItem key={setting} onClick={() => {
-                    handleCloseUserMenu();
-                    if (setting === "Logout") {
-                      handleSignOut();
-                    }
-                  }}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
-                </Menu>
-              </Box>
-            </>
-          ) : (
-            <ButtonLink href="/login">
-              Login
+          <div className="flex gap-4 justify-evenly">
+            <ButtonLink href="/todo">
+              Todo
             </ButtonLink>
-          )}
+            <ButtonLink href="/calendar">
+              Calendar
+            </ButtonLink>
+            <ButtonLink href="/about">
+              About
+            </ButtonLink>
+          </div>
+
+          <Box sx={{ flexGrow: 0 }} className="">
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {userMenu.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
         </div>
       </div>
       <div
@@ -198,10 +162,10 @@ function Navbar() {
           overflow: "hidden",
         }}
       >
-        <NavLink href="/calendar" className="bg-violet-950 text-white rounded-full px-5 py-2">
+        <NavLink href="/calendar" className="bg-violet-950 text-white rounded-full px-5 py-2" setIsMobileMenuOpen={setIsMobileMenuOpen}>
           Calendar
         </NavLink>
-        <NavLink href="/todo" className="bg-gray-300 text-black rounded-full px-5 py-2">
+        <NavLink href="/todo" className="bg-gray-300 text-black rounded-full px-5 py-2" setIsMobileMenuOpen={setIsMobileMenuOpen}>
           Todo List
         </NavLink>
       </div>

@@ -15,6 +15,11 @@ const App = () => {
           <Route path="todo" element={<TodoList />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="login" element={<Login />} />
+          <Route path="about" element={
+            <div className='w-screen h-screen flex justify-center items-center'>
+              <p>About</p>
+            </div>
+          } />
         </Route>
       </Routes>
     </Router>

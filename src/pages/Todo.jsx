@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import TodoItem from '../components/TodoItem';
 import { database } from '../firebase';
-import {ref, onValue, push, update} from '@firebase/database';
+import { ref, onValue, push, update } from '@firebase/database';
 import { Button, Modal } from 'antd';
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -39,32 +39,30 @@ const TodoList = () => {
   const [isCreateCatModalOpen, setIsCreateCatModalOpen] = useState(false);
   const [currTodokey, setCurrTodokey] = useState("");
 
-    const addItem = (eventName, newItemDescription, newItemDate, newItemTime, ph = false) =>
-    {
-      console.log("AddItem")
-      const newData = {
-          description: newItemDescription,
-          date: newItemDate,
-          time: newItemTime,
-          completed: false,
-          ph: ph
-      };
+  const addItem = (eventName, newItemDescription, newItemDate, newItemTime, ph = false) => {
+    console.log("AddItem");
+    const newData = {
+      description: newItemDescription,
+      date: newItemDate,
+      time: newItemTime,
+      completed: false,
+      ph: ph
+    };
 
-      console.log(newData)
+    console.log(newData);
 
-      const newTodoRef = push(ref(database, `todo/${eventName}`));
-      console.log("NEW TODO REF:", newTodoKey)
-      const newTodoKey = newTodoRef.key;
+    const newTodoRef = push(ref(database, `todo/${eventName}`));
+    const newTodoKey = newTodoRef.key;
+    console.log("NEW TODO REF:", newTodoKey);
 
-      const updates = {};
+    const updates = {};
+    updates[`/todo/${eventName}/${newTodoKey}`] = newData;
 
-      updates[`/todo/${eventName}/${newTodoKey}`] = newData;
-
-      update(ref(database), updates)
-          .catch((error) => {
-              console.error("Error adding new item: ", error);
-          });
-      return newTodoKey;
+    update(ref(database), updates)
+      .catch((error) => {
+        console.error("Error adding new item: ", error);
+      });
+    return newTodoKey;
   };
 
   const [editedText, setEditedText] = useState("");
@@ -86,26 +84,23 @@ const TodoList = () => {
     setEditedText("");
   }
 
-  const addCategory = ( eventName ) =>
-    {
-      console.log("AddCat");
+  const addCategory = (eventName) => {
+    console.log("AddCat");
 
-      const firstData = {
-        description: "",
-        date: "",
-        time: "",
-      };
+    const firstData = {
+      description: "",
+      date: "",
+      time: "",
+    };
 
-      addItem(eventName, firstData.description, firstData.date, firstData.time, true);
+    addItem(eventName, firstData.description, firstData.date, firstData.time, true);
   };
 
   useEffect(() => {
     const eventRef = ref(database, 'todo');
-    const eventListener = onValue(eventRef, (snapshot) =>
-    {
+    const eventListener = onValue(eventRef, (snapshot) => {
       const eventData = snapshot.val();
-      if (eventData)
-      {
+      if (eventData) {
         setEvents(Object.keys(eventData));
         setTodos(eventData);
       }
@@ -120,8 +115,7 @@ const TodoList = () => {
     const todosRef = ref(database, `todo/${eventName}`);
     const todosListener = onValue(todosRef, (snapshot) => {
       const todosData = snapshot.val();
-      if(todosData)
-      {
+      if (todosData) {
         setTodos((prevTodos) => ({
           ...prevTodos,
           [eventName]: todosData
@@ -135,8 +129,7 @@ const TodoList = () => {
   };
 
   useEffect(() => {
-    events.forEach((eventName) =>
-    {
+    events.forEach((eventName) => {
       fetchTodosByEvent(eventName);
     });
   }, [events]);
@@ -145,9 +138,9 @@ const TodoList = () => {
     <div className="mx-auto flex">
       <div className="mt-8 sm:mt-0 pt-24 px-2 sm:ps-20 lg:px-64 w-max mx-auto max-w-[90vw]">
         <div className="flex flex-col gap-4">
-        <h1 className="text-3xl font-bold p-4">My Todo List</h1>
+          <h1 className="text-3xl font-bold p-4">My Todo List</h1>
 
-        {events.map((eventName, index) => (
+          {events.map((eventName, index) => (
             <div key={eventName} className='min-w-[35rem] w-1/2'>
               {index === 0 &&
                 <AddSectionBtn
@@ -158,39 +151,31 @@ const TodoList = () => {
 
               <h3 className='pl-6 text-lg font-bold'>{eventName}</h3>
               <ul className='flex flex-col gap-1'>
-                {
-                  <div>
-                    <div>todos[eventName]</div>
-                  </div>
-                   &&
+                {todos[eventName] &&
                   Object.entries(todos[eventName]).map(([id, todo]) => (
-                    todo.ph ? <></> :
-                    <div className='max-w-[85vw]'>
-                      <TodoItem
-                        key={id}
-                        id={id}
-                        description={todo.description}
-                        date={todo.date}
-                        time={todo.time}
-                        completed={todo.completed}
-                        eventName={eventName}
-                        addNewItem={addItem} // so we can access eventname when adding an item
-                        startEditing={currTodokey}
-                        setStartEditing={setCurrTodokey}
-                      />
-
-                    </div>
+                    todo.ph ? null :
+                      <div key={id} className='max-w-[85vw]'>
+                        <TodoItem
+                          id={id}
+                          description={todo.description}
+                          date={todo.date}
+                          time={todo.time}
+                          completed={todo.completed}
+                          eventName={eventName}
+                          addNewItem={addItem} // so we can access eventname when adding an item
+                          startEditing={currTodokey}
+                          setStartEditing={setCurrTodokey}
+                        />
+                      </div>
                   ))}
-
               </ul>
 
               {/* Add todo item button */}
               <Button
                 onClick={() => {
-                    let newTodoKey = addItem(eventName, "To-do Item", "", "");
-                    setCurrTodokey(newTodoKey);
-
-                  }}
+                  const newTodoKey = addItem(eventName, "To-do Item", "", "");
+                  setCurrTodokey(newTodoKey);
+                }}
               >Add</Button>
 
               {/* Add Section button */}
@@ -199,14 +184,11 @@ const TodoList = () => {
                 isCreateCatModalOpen={isCreateCatModalOpen}
               />
             </div>
-
-        ))}
-
+          ))}
         </div>
       </div>
       <div className='max-w-[35rem]'>
         <Modal
-          //title={"Create a Category:"}
           open={isCreateCatModalOpen}
           onOk={handleCreateCatModelOK}
           onCancel={handleCreateCatModelCancel}
@@ -216,8 +198,8 @@ const TodoList = () => {
           <div>
             <div className='flex flex-col gap-2 w-max mx-auto'>
               <p>Category Name:</p>
-              <input type="category text" className='border rounded-sm ' value={editedText} onChange={(e) => setEditedText(e.target.value)} />
-              <Button onClick={() => {addCategory(editedText); setIsCreateCatModalOpen(newTodoKey);}}>Add Category</Button>
+              <input type="text" className='border rounded-sm' value={editedText} onChange={(e) => setEditedText(e.target.value)} />
+              <Button onClick={() => { addCategory(editedText); handleCreateCatModelOK(); }}>Add Category</Button>
             </div>
           </div>
         </Modal>

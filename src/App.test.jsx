@@ -1,19 +1,41 @@
 import {describe, expect, test} from 'vitest';
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import App from './App';
 
-describe('counter tests', () => {
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-  test("Counter should be 0 at the start", () => {
+describe('calendar tests', () => {
+
+  test('renders without crashing', () => {
     render(<App />);
-    expect(screen.getByText('count is: 0')).toBeDefined();
+    expect(screen.getByText('WildCalendar')).toBeDefined();
   });
 
-  test("Counter should increment by one when clicked", async () => {
+  test('navigates to todo page', () => {
     render(<App />);
-    const counter = screen.getByRole('button');
-    fireEvent.click(counter);
-    expect(await screen.getByText('count is: 1')).toBeDefined();
+    fireEvent.click(screen.getByText('Todo'));
+    expect(screen.getByText('Todo List')).toBeDefined();
+  });
+
+  test('navigates to calendar page', () => {
+    render(<App />);
+    const calendarLinks = screen.getAllByText('Calendar');
+    fireEvent.click(calendarLinks[0]);
+    expect(screen.getAllByText('Calendar')[0]).toBeDefined();
+  });
+
+  test('adds events to the todo list', async () => {
+    render(<App />);
+    fireEvent.click(screen.getByText('Todo'));
+    expect(screen.getByText('My Todo List')).toBeDefined();
+
+    await waitFor(() => {
+      expect(screen.getByText('COMP_SCI 394-0 - Agile Software Development')).toBeDefined();
+    })
+
+    expect(screen.getByText('To-do Item')).toBeDefined();
   });
 
 });

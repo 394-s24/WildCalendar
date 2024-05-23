@@ -40,6 +40,7 @@
     "simplebar-react": "^3.2.4",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
+    "testing-library": "^0.0.2",
     "typeface-montserrat": "^1.1.13"
   },
   "devDependencies": {

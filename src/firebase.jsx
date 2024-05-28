@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
 import { initializeApp } from "firebase/app";
-import { getDatabase, get, set, push, ref } from 'firebase/database';
+import { getDatabase, get, set, push, ref, update, remove } from 'firebase/database';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
@@ -32,6 +32,14 @@ const pushData = async (pathname, data) => {
     return await push(ref(database, pathname), data);
 };
 
+const updateData = async (pathname, data) => {
+    return await update(ref(database, pathname), data);
+};
+
+const removeData = async (pathname) => {
+    return await remove(ref(database, pathname));
+};
+
 const login = async () => {
     return signInWithPopup(auth, provider);
 };
@@ -40,4 +48,4 @@ const observeAuthState = (callback) => {
     onAuthStateChanged(auth, callback);
 };
 
-export { firebase, database, getData, setData, pushData, login, observeAuthState };
+export { firebase, database, getData, setData, pushData, updateData, removeData, login, observeAuthState };

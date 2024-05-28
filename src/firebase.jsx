@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 import { initializeApp } from "firebase/app";
-import { getDatabase, get, set, push, ref, update, remove } from 'firebase/database';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, get, set, push, ref, update, remove, onValue } from 'firebase/database';
+import { getAuth as getAuthFB, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCTYcYGvNOL8dr9Fx3-15PXpJXxtIshhTg",
@@ -17,8 +17,12 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-const auth = getAuth(app);
+const auth = getAuthFB(app);
 const provider = new GoogleAuthProvider();
+
+const getAuth = async () => {
+    return auth;
+}
 
 const getData = async (pathname) => {
     return await get(ref(database, pathname));
@@ -53,4 +57,4 @@ const observeAuthState = (callback) => {
     onAuthStateChanged(auth, callback);
 };
 
-export { firebase, database, getData, setData, pushData, updateData, removeData, login, observeData, observeAuthState };
+export { firebase, database, getAuth, getData, setData, pushData, updateData, removeData, login, observeData, observeAuthState };

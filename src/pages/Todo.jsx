@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TodoItem from '../components/TodoItem';
-import { updateData, removeData, pushData, observeData } from '../firebase';
+import { getAuth, pushData, observeData } from '../firebase';
 import { Button, Modal } from 'antd';
 
 const AddSectionBtn = ({ onClick, isCreateCatModalOpen }) => {
@@ -87,7 +87,7 @@ const TodoList = () => {
   };
 
   useEffect(() => {
-    const eventRef = ref(database, 'todo');
+    const eventRef = 'todo';
     const eventListener = observeData(eventRef, (snapshot) => {
       const eventData = snapshot.val();
       if (eventData) {

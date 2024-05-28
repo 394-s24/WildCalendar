@@ -1,7 +1,6 @@
-// Imports
 import React, { useState, useEffect } from "react";
 import { AutoComplete, message } from "antd";
-import { getDatabase, ref, onValue, push, update, set } from "firebase/database";
+import { pushData, setData, updateData, observeData } from '../utilities/firebase';
 
 // Class Search
 const ClassSearch = ({ calendarRef }) => {
@@ -16,9 +15,8 @@ const ClassSearch = ({ calendarRef }) => {
 
   // Get classes from database on component mount
   useEffect(() => {
-    const db = getDatabase();
-    const classRef = ref(db, "NWUClass");
-    onValue(classRef, (snapshot) => {
+    const classRef = 'NWUClass';
+    observeData(classRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         const temp_list = [];
@@ -75,38 +73,32 @@ const ClassSearch = ({ calendarRef }) => {
   };
 
   // Called to add the actual calendar event when clicking the 'Time/Date' div of the selected class
-  const addClassEvent = () => {
-    const db = getDatabase();
-    const eventRef = ref(db, "events");
+  const addClassEvent = async () => {
+    const eventRef = 'events';
     let event1 = calendarRef.current.getApi().getEventById(selectedClass.id);
 
     if (!event1) {
       const formattedClassEvent = buildClassEvent(selectedClass);
-      const newEventRef = push(eventRef);
+      const newEventRef = await pushData(eventRef, formattedClassEvent);
       const newAutoId = newEventRef.key;
       formattedClassEvent.firebaseId = newAutoId;
-      set(newEventRef, formattedClassEvent);
+      await setData(`${eventRef}/${newAutoId}`, formattedClassEvent);
       message.success("Class added to calendar.");
 
       const eventName = formattedClassEvent.groupId;
-      const newTodoRef = ref(db, `todo/${eventName}`);
-      const newCategoryRef = push(newTodoRef);
+      const newTodoRef = `todo/${eventName}`;
       const newData = {
         description: formattedClassEvent.description,
         date: formattedClassEvent.start,
         time: formattedClassEvent.startTime,
       };
 
-      const newTodoKey = newCategoryRef.key;
+      const newTodoKey = await pushData(newTodoRef, newData).key;
       const updates = {};
 
       updates[`/todo/${eventName}/${newTodoKey}`] = newData;
 
-      update(ref(db), updates)
-          .catch((error) => {
-              console.error("Error adding new item: ", error);
-          });
-
+      await updateData('/', updates);
       console.log("Added");
     }
     else {
@@ -122,7 +114,6 @@ const ClassSearch = ({ calendarRef }) => {
     return `${hours}:${minutes} ${suffix}`;
   };
 
-  // Ret
   return (
     <>
       <AutoComplete
@@ -150,7 +141,6 @@ const ClassSearch = ({ calendarRef }) => {
     </>
   );
 };
-
 
 // Export
 export default ClassSearch;

@@ -1,11 +1,7 @@
-// import firebase from 'firebase/app';
 import * as firebase from "firebase/app";
-import 'firebase/app';
-// // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase} from 'firebase/database';
-// import { getAnalytics } from "firebase/analytics";
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getDatabase, get, set, push, ref } from 'firebase/database';
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCTYcYGvNOL8dr9Fx3-15PXpJXxtIshhTg",
@@ -16,12 +12,32 @@ const firebaseConfig = {
     messagingSenderId: "480989815783",
     appId: "1:480989815783:web:208f3ada1d9c59f034d342",
     measurementId: "G-VM5K16BR3T"
-  };
+};
 
 // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-export {firebase, database};
-// const analytics = getAnalytics(app);
+const getData = async (pathname) => {
+    return await get(ref(database, pathname));
+};
+
+const setData = async (pathname, data) => {
+    return await set(ref(database, pathname), data);
+};
+
+const pushData = async (pathname, data) => {
+    return await push(ref(database, pathname), data);
+};
+
+const login = async () => {
+    return signInWithPopup(auth, provider);
+};
+
+const observeAuthState = (callback) => {
+    onAuthStateChanged(auth, callback);
+};
+
+export { firebase, database, getData, setData, pushData, login, observeAuthState };

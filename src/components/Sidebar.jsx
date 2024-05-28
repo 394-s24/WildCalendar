@@ -3,9 +3,6 @@ import ClassSearch from "../components/ClassSearch";
 import AddEventButtonPopup from "../components/AddEventPopup";
 import {
   SettingOutlined,
-  FilterOutlined,
-  MenuOutlined,
-  PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import React, { useState } from "react";

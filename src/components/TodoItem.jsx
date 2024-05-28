@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Space, Button } from 'antd';
-import { updateData, removeData } from '../utilities/firebase';
+import { updateData, removeData } from '../firebase';
 
 export default function TodoItem({ id, date, time, description, eventName, completed, startEditing, setStartEditing }) {
   const [isCompleted, setCompleted] = useState(completed);

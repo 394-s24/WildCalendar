@@ -2,6 +2,7 @@ import {describe, expect, test} from 'vitest';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import App from './App';
 import Todo from './pages/Todo';
+import Login from './pages/Login';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -40,6 +41,15 @@ describe('calendar tests', () => {
 
     await sleep(1000);
     expect(screen.getAllByText('To-do Item')[0]).toBeDefined()
-  })
+  });
 
+  // Test login to see if no user passes
+  test('logs in', async () => {
+    render(<Login />);
+    await sleep(1000);
+    fireEvent.click(screen.getAllByText('Add')[0]);
+
+    await sleep(1000);
+    expect(screen.getAllByText('To-do Item')[0]).toBeDefined()
+  });
 });

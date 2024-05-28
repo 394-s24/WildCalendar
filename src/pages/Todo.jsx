@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TodoItem from '../components/TodoItem';
-import { updateData, removeData, pushData, observeData } from '../utilities/firebase';
+import { updateData, removeData, pushData, observeData } from '../firebase';
 import { Button, Modal } from 'antd';
 
 const AddSectionBtn = ({ onClick, isCreateCatModalOpen }) => {

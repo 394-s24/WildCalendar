@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AutoComplete, message } from "antd";
-import { pushData, setData, updateData, observeData } from '../utilities/firebase';
+import { pushData, setData, updateData, observeData } from '../firebase';
 
 // Class Search
 const ClassSearch = ({ calendarRef }) => {

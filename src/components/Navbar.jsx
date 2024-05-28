@@ -30,7 +30,7 @@ const ButtonLink = ({ href, children }) => {
   )
 };
 
-const NavLink = ({ href, className, children, setIsMobileMenuOpen }) => (
+const NavLink = ({ href, className, children, }) => (
   <Link
     to={href}
     className={`flex justify-center items-center hover:opacity-90 transition-all duration-300 w-full ${className}`}
@@ -162,10 +162,10 @@ function Navbar() {
           overflow: "hidden",
         }}
       >
-        <NavLink href="/calendar" className="bg-violet-950 text-white rounded-full px-5 py-2" setIsMobileMenuOpen={setIsMobileMenuOpen}>
+        <NavLink href="/calendar" className="bg-violet-950 text-white rounded-full px-5 py-2">
           Calendar
         </NavLink>
-        <NavLink href="/todo" className="bg-gray-300 text-black rounded-full px-5 py-2" setIsMobileMenuOpen={setIsMobileMenuOpen}>
+        <NavLink href="/todo" className="bg-gray-300 text-black rounded-full px-5 py-2">
           Todo List
         </NavLink>
       </div>

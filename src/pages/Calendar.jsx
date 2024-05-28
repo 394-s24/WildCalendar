@@ -9,7 +9,7 @@ import React, { useState, useEffect, useRef } from "react";
 import ClickEventPopup from "../components/ClickEventPopup";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { observeAuthState, getData } from '../utilities/firebase';
+import { observeAuthState, getData } from '../firebase';
 
 const CalendarPage = () => {
 

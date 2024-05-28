@@ -7,7 +7,7 @@ import {
 } from '../components/Card';
 import Google from "../assets/goglelol.svg";
 import { Button } from '../components/Button';
-import { login, observeAuthState } from '../utilities/firebase';
+import { login, observeAuthState } from '../firebase.jsx';
 
 function Login() {
     const navigate = useNavigate();

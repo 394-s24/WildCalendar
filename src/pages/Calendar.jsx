@@ -7,23 +7,20 @@ import InteractionPlugin from "@fullcalendar/interaction";
 // Other Imports
 import React, { useState, useEffect, useRef } from "react";
 import ClickEventPopup from "../components/ClickEventPopup";
-import { getDatabase, ref, update, push, remove, onValue } from "@firebase/database";
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { observeAuthState, getData } from '../utilities/firebase';
 
 const CalendarPage = () => {
 
   // References
   const calendarRef = useRef(null);
-  const db = getDatabase();
 
   const navigate = useNavigate();
-  const auth = getAuth();
 
   // Authentication check and redirection
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
+    const unsubscribe = observeAuthState(user => {
       if (!user) {
         navigate("/login");
       }
@@ -44,25 +41,29 @@ const CalendarPage = () => {
       description: ""
     }
   });
-  
+
   // Width detection for toolbar responsiveness
   useEffect(() => {
-      const handleResize = () => {setWidth(window.innerWidth);}
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
+    const handleResize = () => {
+      setWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Update calendar events on change
-  const updateEvents = () => {
-    const eventsRef = ref(db, "events");
-    onValue(eventsRef, (snapshot) => {
+  const updateEvents = async () => {
+    try {
+      const snapshot = await getData("events");
       const data = snapshot.val();
       const temp_list = [];
       for (let id in data) {
         temp_list.push(data[id]);
       }
       setCalendarEvents(temp_list);
-    });
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
   };
 
   // On-Mount event initialization
@@ -77,7 +78,6 @@ const CalendarPage = () => {
     setShowClickEventPopup(true);
   };
 
-  // Ret
   return (
     <div className="mx-auto flex">
       <div className="fixed h-screen">
@@ -128,7 +128,6 @@ const CalendarPage = () => {
               eventClick={onEventClick}
               // eventChange={onEventChange}
               eventColor="#20025a"
-              
             />
             <ClickEventPopup
               open={showClickEventPopup}

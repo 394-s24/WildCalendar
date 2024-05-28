@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TodoItem from '../components/TodoItem';
-import { database } from '../firebase';
-import { ref, onValue, push, update } from '@firebase/database';
+import { updateData, removeData, pushData, observeData } from '../utilities/firebase';
 import { Button, Modal } from 'antd';
-// import { useNavigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const AddSectionBtn = ({ onClick, isCreateCatModalOpen }) => {
   return (
@@ -39,7 +36,7 @@ const TodoList = () => {
   const [isCreateCatModalOpen, setIsCreateCatModalOpen] = useState(false);
   const [currTodokey, setCurrTodokey] = useState("");
 
-  const addItem = (eventName, newItemDescription, newItemDate, newItemTime, ph = false) => {
+  const addItem = async (eventName, newItemDescription, newItemDate, newItemTime, ph = false) => {
     console.log("AddItem");
     const newData = {
       description: newItemDescription,
@@ -51,17 +48,10 @@ const TodoList = () => {
 
     console.log(newData);
 
-    const newTodoRef = push(ref(database, `todo/${eventName}`));
+    const newTodoRef = await pushData(`todo/${eventName}`, newData);
     const newTodoKey = newTodoRef.key;
     console.log("NEW TODO REF:", newTodoKey);
 
-    const updates = {};
-    updates[`/todo/${eventName}/${newTodoKey}`] = newData;
-
-    update(ref(database), updates)
-      .catch((error) => {
-        console.error("Error adding new item: ", error);
-      });
     return newTodoKey;
   };
 
@@ -98,7 +88,7 @@ const TodoList = () => {
 
   useEffect(() => {
     const eventRef = ref(database, 'todo');
-    const eventListener = onValue(eventRef, (snapshot) => {
+    const eventListener = observeData(eventRef, (snapshot) => {
       const eventData = snapshot.val();
       if (eventData) {
         setEvents(Object.keys(eventData));
@@ -112,8 +102,8 @@ const TodoList = () => {
   }, []);
 
   const fetchTodosByEvent = (eventName) => {
-    const todosRef = ref(database, `todo/${eventName}`);
-    const todosListener = onValue(todosRef, (snapshot) => {
+    const todosRef = `todo/${eventName}`;
+    const todosListener = observeData(todosRef, (snapshot) => {
       const todosData = snapshot.val();
       if (todosData) {
         setTodos((prevTodos) => ({

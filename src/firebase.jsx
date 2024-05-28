@@ -53,4 +53,4 @@ const observeAuthState = (callback) => {
     onAuthStateChanged(auth, callback);
 };
 
-export { firebase, database, getData, setData, pushData, updateData, removeData, login, observeAuthState };
+export { firebase, database, getData, setData, pushData, updateData, removeData, login, observeData, observeAuthState };

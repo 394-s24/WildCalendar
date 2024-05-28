@@ -15,14 +15,9 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import {
-  getDatabase,
   ref,
-  update,
-  push,
-  remove,
-  onValue,
 } from "@firebase/database";
-
+import { database, getData, setData, pushData, removeData } from '../firebase'
 
 // Date to String helper
 const convertDateToStr = (aDate) => {
@@ -84,9 +79,9 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
       const removalId = event1.extendedProps.firebaseId;
       console.log("event1", event1);
       console.log("removal id", removalId);
-      const db = getDatabase();
-      const eventRef = ref(db, `events/${removalId}`);
-      remove(eventRef);
+      //const db = getDatabase();
+      //const eventRef = ref(db, `events/${removalId}`);
+      removeData(`events/${removalId}`);
       setOpen(false);
     }
   };

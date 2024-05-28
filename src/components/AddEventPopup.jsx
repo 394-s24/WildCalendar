@@ -3,7 +3,8 @@ import { Modal, Form, DatePicker, Input, TimePicker, Checkbox, message } from "a
 import { Button } from "@/components/Button";
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
-import { getDatabase, ref, push, set } from "firebase/database";
+//import { getDatabase, ref, push, set } from "firebase/database";
+import { database, getData, setData, pushData, login } from '../firebase'
 
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 const dateFormat = "YYYY-MM-DD";
@@ -42,11 +43,9 @@ const AddEventButtonPopup = ({
     form.resetFields();
   };
 
-  const handleOk = (fieldsValue) => {
+  const handleOk = async (fieldsValue) => {
     let newId = uuidv4();
     let values = {};
-    const db = getDatabase();
-    const eventRef = ref(db, "events");
     console.log(daysOfWeek)
 
     if (recur) {
@@ -122,10 +121,10 @@ const AddEventButtonPopup = ({
     setOpen(false);
     calendarRef.current.getApi().addEvent(values);
 
-    const newEventRef = push(eventRef);
+    const newEventRef = await pushData('events', values);
     const newAutoId = newEventRef.key;
     values.firebaseId = newAutoId;
-    set(newEventRef, values);
+    setData('events', values);
     message.success("Event added to calendar.");
   };
     

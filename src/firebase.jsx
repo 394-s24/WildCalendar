@@ -40,6 +40,11 @@ const removeData = async (pathname) => {
     return await remove(ref(database, pathname));
 };
 
+const observeData = (pathname, callback) => {
+  const dbRef = ref(database, pathname);
+  return onValue(dbRef, callback);
+}
+
 const login = async () => {
     return signInWithPopup(auth, provider);
 };

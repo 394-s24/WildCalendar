@@ -25,7 +25,7 @@ const CalendarPage = () => {
         navigate("/login");
       }
     });
-    return () => unsubscribe(); // Clean up the subscription
+    return () => unsubscribe && unsubscribe(); // Clean up the subscription
   }, [navigate]);
 
   // Events, Event popup boolean, Window sizing, Recently clicked event

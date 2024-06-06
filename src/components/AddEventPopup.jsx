@@ -3,9 +3,6 @@ import { Modal, Form, DatePicker, Input, TimePicker, Checkbox, message } from "a
 import { Button } from "@/components/Button";
 import { v4 as uuidv4 } from "uuid";
 import dayjs from "dayjs";
-//import { getDatabase, ref, push, set } from "firebase/database";
-import { database, getData, setData, pushData, login } from '../firebase'
-
 const dateTimeFormat = "YYYY-MM-DD HH:mm";
 const dateFormat = "YYYY-MM-DD";
 const weekdays = [
@@ -194,7 +191,7 @@ const AddEventButtonPopup = ({
                 {
                   required: true,
                   message:
-                    "Start date of the recurring event must not be empty!",
+                    "Must enter a valid time!",
                 },
               ]}
             >

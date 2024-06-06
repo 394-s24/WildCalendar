@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dropdown, Space, Button } from 'antd';
+import { Dropdown, Space, Button, message } from 'antd';
 import { updateData, removeData } from '../firebase';
 
 export default function TodoItem({ id, date, time, description, eventName, completed, startEditing, setStartEditing }) {
@@ -26,12 +26,18 @@ export default function TodoItem({ id, date, time, description, eventName, compl
     await removeData(`todo/${eventName}/${id}`);
   };
 
+
   const updateItem = async () => {
+    const timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/; // Regular expression for HH:MM format
+    if (!timeFormat.test(editedTime)) {
+      message.error("Invalid time format. Please use HH:MM format.");
+      return;
+    }
+  
     await updateData(`todo/${eventName}/${id}`, { description: editedText, date: editedDate, time: editedTime });
     setEditing(!editing);
     setStartEditing("");
   };
-
   const items = [
     {
       label: 'Edit',
@@ -53,8 +59,8 @@ export default function TodoItem({ id, date, time, description, eventName, compl
         {editing ? (
           <>
             <input type="text" value={editedText} onChange={(e) => setEditedText(e.target.value)} />
-            <input type="date" value={editedDate} onChange={(e) => setEditedDate(e.target.value)} />
-            <input type="time" value={editedTime} onChange={(e) => setEditedTime(e.target.value)} />
+            <input type="date" aria-label="Event Date" value={editedDate} onChange={(e) => setEditedDate(e.target.value)} />
+            <input type="time" aria-label="Event Time" value={editedTime} onChange={(e) => setEditedTime(e.target.value)} />
           </>
         ) : (
           <div className='flex flex-col gap-1'>

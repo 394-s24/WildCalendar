@@ -25,6 +25,7 @@
     "@mui/material": "^5.15.15",
     "@radix-ui/react-navigation-menu": "^1.1.4",
     "@radix-ui/react-slot": "^1.0.2",
+    "@testing-library/vue": "^8.1.0",
     "antd": "^5.16.0",
     "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
@@ -42,10 +43,13 @@
     "simplebar-react": "^3.2.4",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
+    "testing-library": "^0.0.2",
     "typeface-montserrat": "^1.1.13",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vue-router": "^4.3.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^14.2.2",
     "@types/node": "^20.12.4",
     "@vitejs/plugin-react": "^4.2.1",

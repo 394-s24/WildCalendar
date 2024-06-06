@@ -128,6 +128,7 @@ const AddEventButtonPopup = ({
         onCancel={handleCancel}
         afterOpenChange={onClose}
         afterClose={onClose}
+        destroyOnClose={true}
       >
         <Form
           id="CreateEventForm"
@@ -156,15 +157,13 @@ const AddEventButtonPopup = ({
           </Form.Item>
 
           {/* RECURRING BOOL */}
-          <Form.Item name="isRecurring">
+          <Form.Item label="isRecurring" name="isRecurring">
             <Checkbox
               checked={recur}
               onChange={(e) => {
                 setRecur(e.target.checked);
               }}
-              className=""
             >
-              Recurring?
             </Checkbox>
           </Form.Item>
 
@@ -211,7 +210,7 @@ const AddEventButtonPopup = ({
           {recur && (
             <Form.Item
               name="start-recurrence"
-              label="Start Date"
+              label="Start-Date"
               rules={[
                 {
                   required: true,
@@ -228,7 +227,7 @@ const AddEventButtonPopup = ({
           {recur && (
             <Form.Item
               name="end-recurrence"
-              label="End Date"
+              label="End-Date"
               rules={[
                 {
                   required: true,

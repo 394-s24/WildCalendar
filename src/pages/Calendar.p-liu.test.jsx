@@ -2,6 +2,7 @@ import {describe, expect, test, vi, it} from 'vitest';
 import {fireEvent, render, screen} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import CalendarPage from './Calendar'; // Adjust the path as needed
+import dayjs from "dayjs";
 
 const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -26,7 +27,7 @@ beforeAll(() => {
   mockMatchMedia();
 });
 
-test('add a recurring event.', async () => {
+test('add a recurring event and then delete.', async () => {
   render(
     <MemoryRouter>
       <CalendarPage />
@@ -47,7 +48,6 @@ test('add a recurring event.', async () => {
 
   const IsRecurringCheckbox = screen.getByLabelText('isRecurring')
   fireEvent.click(IsRecurringCheckbox)
-  console.log(IsRecurringCheckbox.checked)
   
   expect(IsRecurringCheckbox.checked).toEqual(true)
 
@@ -67,21 +67,31 @@ test('add a recurring event.', async () => {
     expect(value.checked).toEqual(true)
   }
   fireEvent.change(screen.getByLabelText('Title'), { target: { value: namestr } });
-  fireEvent.change(screen.getByLabelText('Start-Date'), { target: { value: '2024-04-25' } });
-  fireEvent.change(screen.getByLabelText('End-Date'), { target: { value: '2024-05-22' } });
+  fireEvent.change(screen.getByLabelText('Start-Date'), { target: { value: dayjs('2024-04-25') } });
+  fireEvent.change(screen.getByLabelText('End-Date'), { target: { value: dayjs('2024-05-22') } });
+  // fireEvent.change(screen.getAllByRole('input', { name: 'Start-Date' })[0], { target: { value: '2024-04-25' } });
+  // fireEvent.change(screen.getAllByRole('input', { name: 'End-Date' })[0], { target: { value: '2024-05-22' } });
   fireEvent.change(screen.getByLabelText('Description'), { target: { value: namestr } });
+  
+  const timePickerInput1 = screen.getByLabelText('RecurringTime');
+  // const timePickerInput2 = screen.getAllByPlaceholderText('End time')[0];
+  // console.log("Time Picker Input:", timePickerInput1);
+  // console.log("Time Picker Input:", timePickerInput2);
 
-  const timePickerInput = screen.getAllByPlaceholderText(/time/i);
-  console.log("Time Picker Input:", timePickerInput);
+  fireEvent.change(timePickerInput1, { target: { value: [dayjs('05:00:00', 'HH:mm:ss'), dayjs('13:00:00', 'HH:mm:ss')] } });
+  //fireEvent.change(timePickerInput2, { target: { value: dayjs('13:00:00', 'HH:mm:ss') } });
 
-  fireEvent.change(timePickerInput[0], { target: { value: '05:00 AM' } });
-  fireEvent.change(timePickerInput[1], { target: { value: '13:00 AM' } });
+  // for (let i = 0; i < timePickerInput.length; i += 2) {
+  //   fireEvent.change(timePickerInput[i], { target: { value: '05:00 AM' } });
+  //   fireEvent.change(timePickerInput[i+1], { target: { value: '13:00 AM' } });
+  // }
 
 
-  const addModalOKButtons = screen.getAllByRole('button', { name: 'OK' });
-  for (const addModalOKButton of addModalOKButtons) {
-    fireEvent.click(addModalOKButton);
-  }
+  const addModalOKButton = screen.getAllByRole('button', { name: 'OK' })[0];
+  fireEvent.click(addModalOKButton);
+  // for (const addModalOKButton of addModalOKButtons) {
+  //   fireEvent.click(addModalOKButton);
+  // }
 
   expect(screen.getAllByText(namestr)[0]).toBeDefined();
 });

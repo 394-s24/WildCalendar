@@ -160,6 +160,7 @@ const AddEventButtonPopup = ({
           <Form.Item label="isRecurring" name="isRecurring">
             <Checkbox
               checked={recur}
+              value={recur}
               onChange={(e) => {
                 setRecur(e.target.checked);
               }}
@@ -243,7 +244,7 @@ const AddEventButtonPopup = ({
           {recur && (
             <Form.Item
               name="time-picker"
-              label="Time"
+              label="RecurringTime"
               rules={[
                 {
                   required: true,

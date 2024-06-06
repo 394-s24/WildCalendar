@@ -34,17 +34,18 @@ test('add a recurring event.', async () => {
 
   // Adding a to-do item first
   await sleep(500);
-  const addButton = screen.getAllByRole('button', { name: 'Add Event' })[0];
+  //const addButton = screen.getAllByText('Add Event')[0];
+  const addButton = screen.getAllByRole('button', { name: 'Add Event' })[0]
   console.log(addButton)
   fireEvent.click(addButton);
 
-  await sleep(500);
+  // await sleep(500);
 
   expect(screen.getAllByText('Create an Event')[0]).toBeDefined();
   const IsRecurringCheckbox = screen.getAllByRole('checkbox', { name: 'Recurring?' })[0]
   fireEvent.click(IsRecurringCheckbox)
   expect(IsRecurringCheckbox.checked).toEqual(true)
-
+  // //expect(ipv6Radio).toBeChecked()
   const weekday_group = {
     'mon': screen.getAllByRole('checkbox', { name: 'Monday' })[0],
     //'tue': screen.getAllByRole('checkbox', { name: 'Tuesday' })[0],

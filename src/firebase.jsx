@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
 import { initializeApp } from "firebase/app";
-import { getDatabase, get, set, push, ref, update, remove, onValue } from '@firebase/database';
+import { getDatabase, get, set, push, ref, update, remove, onValue } from 'firebase/database';
 import { getAuth as getAuthFB, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {

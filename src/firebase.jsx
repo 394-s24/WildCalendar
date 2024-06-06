@@ -1,6 +1,6 @@
 import * as firebase from "firebase/app";
 import { initializeApp } from "firebase/app";
-import { getDatabase, get, set, push, ref, update, remove, onValue } from 'firebase/database';
+import { getDatabase, get, set, push, ref, update, remove, onValue } from '@firebase/database';
 import { getAuth as getAuthFB, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
@@ -29,7 +29,15 @@ const getData = async (pathname) => {
 };
 
 const setData = async (pathname, data) => {
-    return await set(ref(database, pathname), data);
+    if(pathname.length > 0)
+    {
+        return await set(ref(database, pathname), data);
+    }
+    else
+    {
+        //console.log("LOL")
+        return await set(ref(database), data);
+    }
 };
 
 const pushData = async (pathname, data) => {
@@ -37,7 +45,15 @@ const pushData = async (pathname, data) => {
 };
 
 const updateData = async (pathname, data) => {
-    return await update(ref(database, pathname), data);
+    if(pathname.length > 0)
+    {
+        return await update(ref(database, pathname), data);
+    }
+    else
+    {
+        //console.log("LOL")
+        return await update(ref(database), data);
+    }
 };
 
 const removeData = async (pathname) => {

@@ -43,90 +43,69 @@ const AddEventButtonPopup = ({
     form.resetFields();
   };
 
-  const handleOk = async (fieldsValue) => {
+  const handleOk = (fieldsValue) => {
     let newId = uuidv4();
     let values = {};
-    console.log(daysOfWeek)
-
     if (recur) {
-      const {
-        title,
-        description,
-        startrecur,
-        endrecur,
-        timePickerRec,
-      } = fieldsValue;
-      let startRecStr = new Date(
-        startrecur
-          .format(dateFormat)
-      )
-      let endRecStr = new Date(
-        endrecur
-          .format(dateFormat)
-      )
+      console.log(fieldsValue)
+      let startrecur1 = new Date(fieldsValue["start-recurrence"].format("YYYY-MM-DD"));
+      startrecur1.setDate(startrecur1.getDate() + 1)
+      let startrecur1_string = startrecur1.toISOString().split("T")[0]
+      let endrecur1 = new Date(fieldsValue["end-recurrence"].format("YYYY-MM-DD"));
+      endrecur1.setDate(endrecur1.getDate() + 1)
+      let endrecur1_string = endrecur1.toISOString().split("T")[0]
       values = {
-        title: title,
-        startTime: startrecur
+        title: fieldsValue["title"],
+        startTime: fieldsValue["start-recurrence"]
           .clone()
-          .hour(timePickerRec[0].hour())
-          .minute(timePickerRec[0].minute())
+          .hour(fieldsValue["time-picker"][0].hour())
+          .minute(fieldsValue["time-picker"][0].minute())
           .format("HH:mm"),
-        endTime: endrecur
+        endTime: fieldsValue["end-recurrence"]
           .clone()
-          .hour(timePickerRec[1].hour())
-          .minute(timePickerRec[1].minute())
+          .hour(fieldsValue["time-picker"][1].hour())
+          .minute(fieldsValue["time-picker"][1].minute())
           .format("HH:mm"),
-        description: description
-          ? description
+        description: fieldsValue["description"]
+          ? fieldsValue["description"]
           : "",
-        start: startRecStr,
-        end: endRecStr,
+        startRecur: startrecur1_string,
+        endRecur: endrecur1_string,
         daysOfWeek: daysOfWeek,
         id: newId,
         editable: false,
-        groupId: title,
+        groupId: newId,
         NWUClass: false,
         recurEvent: true,
       };
-    } 
-    else {
-      const {
-        title,
-        description,
-        datenonrecur,
-        timePicker,
-      } = fieldsValue;
+    } else {
       values = {
-        title: title,
-        start: datenonrecur
-          .hour(timePicker[0].hour())
-          .minute(timePicker[0].minute())
+        title: fieldsValue["title"],
+        start: fieldsValue["range-picker1"][0]
+          // .clone()
+          // .hour(fieldsValue["time-picker"][0].hour())
+          // .minute(fieldsValue["time-picker"][0].minute())
           .format(dateTimeFormat),
-        end: datenonrecur
-          .hour(timePicker[1].hour())
-          .minute(timePicker[1].minute())
+        end: fieldsValue["range-picker1"][1]
+          // .clone()
+          // .hour(fieldsValue["time-picker"][1].hour())
+          // .minute(fieldsValue["time-picker"][1].minute())
           .format(dateTimeFormat),
-        description: description
-          ? description
+        description: fieldsValue["description"]
+          ? fieldsValue["description"]
           : "",
         id: newId,
-        groupId: title,
+        groupId: "",
         NWUClass: false,
         recurEvent: false,
-        editable: true,
       };
     }
-
-    console.log(values);
+    console.log(values)
     setOpen(false);
     calendarRef.current.getApi().addEvent(values);
-
-    const newEventRef = await pushData('events', values);
-    const newAutoId = newEventRef.key;
-    values.firebaseId = newAutoId;
-    setData('events', values);
     message.success("Event added to calendar.");
   };
+
     
   return (
     <>
@@ -209,7 +188,7 @@ const AddEventButtonPopup = ({
           {/* NONRECURRING TIME */}
           {!recur && (
             <Form.Item
-              name="timePicker"
+              name="range-picker1"
               label="Time"
               rules={[
                 {
@@ -231,7 +210,7 @@ const AddEventButtonPopup = ({
           {/* RECURRING START DATE */}
           {recur && (
             <Form.Item
-              name="startrecur"
+              name="start-recurrence"
               label="Start Date"
               rules={[
                 {
@@ -248,7 +227,7 @@ const AddEventButtonPopup = ({
           {/* RECURRING END DATE */}
           {recur && (
             <Form.Item
-              name="endrecur"
+              name="end-recurrence"
               label="End Date"
               rules={[
                 {
@@ -264,7 +243,7 @@ const AddEventButtonPopup = ({
           {/* RECURRING TIME */}
           {recur && (
             <Form.Item
-              name="timePickerRec"
+              name="time-picker"
               label="Time"
               rules={[
                 {

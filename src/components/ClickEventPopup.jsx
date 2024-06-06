@@ -76,12 +76,12 @@ const ClickEventPopup = ({ open, setOpen, currEvent, calendarRef }) => {
   const onClickDelete = () => {
     if (calendarRef != null && calendarRef.current != null) {
       let event1 = calendarRef.current.getApi().getEventById(currEvent.id);
-      const removalId = event1.extendedProps.firebaseId;
-      console.log("event1", event1);
-      console.log("removal id", removalId);
+      event1.remove();
+      //const removalId = event1.extendedProps.firebaseId;
+      //console.log("event1", event1);
+      //console.log("removal id", removalId);
       //const db = getDatabase();
       //const eventRef = ref(db, `events/${removalId}`);
-      removeData(`events/${removalId}`);
       setOpen(false);
     }
   };
